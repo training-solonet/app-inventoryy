@@ -82,9 +82,10 @@
                                                     <a href="{{ route('barang.show', 1) }}" class="btn btn-info btn-sm" title="View">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
-                                                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editBarangModal" title="Edit">
+                                                    <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editBarangModal{{ $barang->id }}" title="Edit">
                                                         <i class="fa fa-edit"></i>
-                                                    </button>
+                                                    </a>
+
                                                     <form action="{{ route('barang.destroy', 1) }}" method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
@@ -152,52 +153,55 @@
             </div>
 
 
-           <!-- Modal Edit Barang -->
-{{-- <div class="modal fade" id="editBarangModal" tabindex="-1" role="dialog" aria-labelledby="editBarangModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="editBarangModalLabel">Edit Barang</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
+            <!-- Modal Edit Barang -->
+            @foreach ($barangs as $barang)
+            <div class="modal fade" id="editBarangModal{{ $barang->id }}" tabindex="-1" role="dialog" aria-labelledby="editBarangModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="editBarangModalLabel">Edit Barang</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="{{ route('barang.update', $barang->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="nama_barang">Nama Barang</label>
+                                    <input type="text" class="form-control" id="nama_barang" name="nama_barang" value="{{ $barang->nama_barang }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kondisi">Kondisi</label>
+                                    <input type="text" class="form-control" id="kondisi" name="kondisi" value="{{ $barang->kondisi }}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="jenis">Jenis</label>
+                                    <select class="form-control" id="jenis" name="jenis" required>
+                                        <option value="properti" {{ $barang->jenis == 'properti' ? 'selected' : '' }}>Properti</option>
+                                        <option value="perkakas" {{ $barang->jenis == 'perkakas' ? 'selected' : '' }}>Perkakas</option>
+                                    </select>
+                                </div>
+                                <div class="form-group-file">
+                                    <label for="gambar">Gambar</label><br>
+                                    @if ($barang->gambar)
+                                        <img src="{{ asset('images/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" style="width: 100px; height: auto;"><br>
+                                    @endif
+                                    <input type="file" class="form-control-file mt-2" id="gambar" name="gambar" accept="image/*">
+                                    <small>*Unggah jika ingin mengganti gambar</small>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-warning">Update</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
             </div>
-            <form action="{{ route('barang.update', $barang->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label for="nama_barang">Nama Barang</label>
-                        <input type="text" class="form-control" id="nama_barang" name="nama_barang" value="{{ $barang->nama_barang }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="kondisi">Kondisi</label>
-                        <input type="text" class="form-control" id="kondisi" name="kondisi" value="{{ $barang->kondisi }}" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="jenis">Jenis</label>
-                        <select class="form-control" id="jenis" name="jenis" required>
-                            <option value="properti" {{ $barang->jenis == 'properti' ? 'selected' : '' }}>Properti</option>
-                            <option value="perkakas" {{ $barang->jenis == 'perkakas' ? 'selected' : '' }}>Perkakas</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="gambar">Gambar</label><br>
-                        @if ($barang->gambar)
-                            <img src="{{ asset('images/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" style="width: 100px; height: auto;"><br>
-                        @endif
-                        <input type="file" class="form-control-file mt-2" id="gambar" name="gambar" accept="image/*">
-                        <small>*Unggah jika ingin mengganti gambar</small>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                    <button type="submit" class="btn btn-warning">Update</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div> --}}
+            @endforeach
+
 
 
             {{-- footer --}}
@@ -219,28 +223,8 @@
     <script src="../assets/js/paper-dashboard.min.js?v=2.0.1" type="text/javascript"></script><!-- Paper Dashboard DEMO methods, don't include it in your project! -->
     <script src="../assets/demo/demo.js"></script>
 
-    <script>
-        // Script to populate the edit modal dynamically
-        $(document).on('click', '.edit-barang', function () {
-            var barangId = $(this).data('id');
-            var namaBarang = $(this).data('nama');
-            var kondisiBarang = $(this).data('kondisi');
-            var jenisBarang = $(this).data('jenis');
-            var gambarBarang = $(this).data('gambar');
 
-            $('#editBarangModal').find('#nama_barang').val(namaBarang);
-            $('#editBarangModal').find('#kondisi').val(kondisiBarang);
-            $('#editBarangModal').find('#jenis').val(jenisBarang);
-            $('#editBarangModal').find('form').attr('action', '/barang/' + barangId);
-            if (gambarBarang) {
-                $('#editBarangModal').find('#existing-image').attr('src', '/images/' + gambarBarang).show();
-            } else {
-                $('#editBarangModal').find('#existing-image').hide();
-            }
 
-            $('#editBarangModal').modal('show');
-        });
-    </script>
 </body>
 
 </html>
