@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-class UserController extends Controller
+class PetugasController extends Controller
 {
     public function index()
     {
-        return view('tb_user',[
-            "active" => 'user'
+        return view('tb_petugas',[
+            "active" => 'petugas'
         ]);
     }
 }

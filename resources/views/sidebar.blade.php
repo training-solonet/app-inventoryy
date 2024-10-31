@@ -23,10 +23,10 @@
           <p>Data Barang</p>
         </a>
       </li>
-      <li class="{{ request()->routeIs('user.index') ? 'active' : '' }}">
-        <a href="{{ route('user.index') }}">
+      <li class="{{ request()->routeIs('petugas.index') ? 'active' : '' }}">
+        <a href="{{ route('petugas.index') }}">
           <i class="nc-icon nc-badge"></i>
-          <p>Data User</p>
+          <p>Data Petugas</p>
         </a>
       </li>
       <li class="{{ request()->routeIs('peminjaman.index') ? 'active' : '' }}">
