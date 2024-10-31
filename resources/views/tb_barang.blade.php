@@ -51,9 +51,6 @@
                                 </button>
                             </div>
                             <div class="card-body">
-                                @if(session('success'))
-                                    <div class="alert alert-success">{{ session('success') }}</div>
-                                @endif
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead class=" text-primary">
@@ -93,10 +90,10 @@
                                                         <i class="fa fa-edit"></i>
                                                     </a>
 
-                                                    <form action="{{ route('barang.destroy', 1) }}" method="POST" style="display:inline;">
+                                                    <form id="delete-form-{{ $barang->id }}" action="{{ route('barang.destroy', $barang->id) }}" method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
-                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');" title="Delete">
+                                                        <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $barang->id }})" title="Delete">
                                                             <i class="fa fa-trash"></i>
                                                         </button>
                                                     </form>
@@ -122,7 +119,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="{{ route('barang.store') }}" method="POST" enctype="multipart/form-data">
+                        <form id="addBarangForm" action="{{ route('barang.store') }}" method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
                             @csrf
                             <div class="modal-body">
                                 <div class="form-group">
@@ -171,7 +168,7 @@
                                 <span aria-hidden="true">&times;</span>
                             </button>
                         </div>
-                        <form action="{{ route('barang.update', $barang->id) }}" method="POST" enctype="multipart/form-data">
+                        <form action="{{ route('barang.update', $barang->id) }}" method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
                             @csrf
                             @method('PUT')
                             <div class="modal-body">
@@ -208,6 +205,7 @@
                 </div>
             </div>
             @endforeach
+
 
             <!-- Modal Detail Barang -->
             <div class="modal fade" id="detailBarangModal" tabindex="-1" role="dialog" aria-labelledby="detailBarangModalLabel" aria-hidden="true">
@@ -259,6 +257,78 @@
     <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/paper-dashboard.min.js?v=2.0.1" type="text/javascript"></script><!-- Paper Dashboard DEMO methods, don't include it in your project! -->
     <script src="../assets/demo/demo.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+
+
+    <script>
+        function confirmDelete(id) {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Data ini akan dihapus secara permanen!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d33',
+                cancelButtonColor: '#3085d6',
+                confirmButtonText: 'Ya, hapus!',
+                cancelButtonText: 'Batal'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Tampilkan loading
+                    Swal.fire({
+                        title: 'Menghapus...',
+                        text: 'Mohon tunggu sebentar.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading()
+                        }
+                    });
+
+                    // Kirim form setelah menampilkan loading
+                    document.getElementById('delete-form-' + id).submit();
+                }
+            });
+        }
+    </script>
+
+    @if(session('success'))
+    <script>
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil!',
+            text: "{{ session('success') }}",
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+    </script>
+    @endif
+
+    <script>
+        function showLoading() {
+            Swal.fire({
+                title: 'Menambahkan...',
+                text: 'Mohon tunggu sebentar.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+        }
+    </script>
+
+    <script>
+        function showLoading() {
+            Swal.fire({
+                title: 'Mengupdate...',
+                text: 'Mohon tunggu sebentar.',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading()
+                }
+            });
+        }
+    </script>
+
 
     <script>
         $(document).on('click', '[data-toggle="modal"][data-target="#detailBarangModal"]', function () {

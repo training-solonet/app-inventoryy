@@ -8,7 +8,7 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::all(); // Menampilkan semua data barang
+        $barangs = Barang::orderBy('created_at', 'desc')->get(); // Mengurutkan barang terbaru di paling atas
         return view('tb_barang', [
             "active" => 'barang',
             "barangs" => $barangs
@@ -80,6 +80,21 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui!');
     }
+
+    public function destroy($id)
+    {
+        $barang = Barang::findOrFail($id);
+
+        // Hapus gambar dari direktori jika ada
+        if ($barang->gambar && file_exists(public_path('images/' . $barang->gambar))) {
+            unlink(public_path('images/' . $barang->gambar));
+        }
+
+        $barang->delete();
+
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus!');
+    }
+
 
 
 }
