@@ -20,7 +20,6 @@ class BarangController extends Controller
     {
         $request->validate([
             'nama_barang' => 'required|string|max:255',
-            'barcode' => 'required|string|max:255',
             'kondisi' => 'required|string|max:255',
             'jenis' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
@@ -28,7 +27,6 @@ class BarangController extends Controller
 
         $barang = new Barang();
         $barang->nama_barang = $request->nama_barang;
-        $barang->barcode = $request->barcode; // Pastikan input ini ditambahkan ke modal
         $barang->kondisi = $request->kondisi;
         $barang->jenis = $request->jenis;
 

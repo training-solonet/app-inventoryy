@@ -19,10 +19,19 @@
     <link href="../assets/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="../assets/demo/demo.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+
+
+
+
 
     <style>
         table td, table th {
             padding: 10px 15px; /* Tambahkan padding sesuai kebutuhan */
+        }
+        .btn:hover {
+            transform: scale(1.01);
+            transition: transform 0.2s;
         }
     </style>
 </head>
@@ -78,23 +87,22 @@
                                                 <td class="text-center">
                                                     <a href="#" class="btn btn-info btn-sm" title="Detail" data-toggle="modal" data-target="#detailBarangModal"
                                                     data-nama="{{ $barang->nama_barang }}"
-                                                    data-barcode="{{ $barang->barcode }}"
                                                     data-kondisi="{{ $barang->kondisi }}"
                                                     data-jenis="{{ $barang->jenis }}"
                                                     data-gambar="{{ asset('images/' . $barang->gambar) }}"
                                                     data-deskripsi="{{ $barang->deskripsi ?? 'Tidak ada deskripsi' }}">
-                                                        <i class="fa fa-eye"></i>
+                                                        <i class="fas fa-info-circle"></i> <!-- Ikon info -->
                                                     </a>
 
                                                     <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editBarangModal{{ $barang->id }}" title="Edit">
-                                                        <i class="fa fa-edit"></i>
+                                                        <i class="fas fa-pencil-alt"></i> <!-- Ikon pencil -->
                                                     </a>
 
                                                     <form id="delete-form-{{ $barang->id }}" action="{{ route('barang.destroy', $barang->id) }}" method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $barang->id }})" title="Delete">
-                                                            <i class="fa fa-trash"></i>
+                                                            <i class="fas fa-trash-alt"></i> <!-- Ikon trash-alt -->
                                                         </button>
                                                     </form>
                                                 </td>
@@ -125,10 +133,6 @@
                                 <div class="form-group">
                                     <label for="nama_barang">Nama Barang</label>
                                     <input type="text" class="form-control" id="nama_barang" name="nama_barang" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="barcode">Barcode</label>
-                                    <input type="text" class="form-control" id="barcode" name="barcode" required>
                                 </div>
                                 <div class="form-group">
                                     <label for="kondisi">Kondisi</label>
@@ -223,7 +227,6 @@
                             </div>
                             <div class="mt-3">
                                 <p><strong>Nama Barang:</strong> <span id="barangNama"></span></p>
-                                <p><strong>Barcode:</strong> <span id="barangBarcode"></span></p>
                                 <p><strong>Kondisi:</strong> <span id="barangKondisi"></span></p>
                                 <p><strong>Jenis:</strong> <span id="barangJenis"></span></p>
                                 <p><strong>Deskripsi:</strong> <span id="barangDeskripsi"></span></p>
@@ -333,7 +336,6 @@
     <script>
         $(document).on('click', '[data-toggle="modal"][data-target="#detailBarangModal"]', function () {
             $('#barangNama').text($(this).data('nama'));
-            $('#barangBarcode').text($(this).data('barcode'));
             $('#barangKondisi').text($(this).data('kondisi'));
             $('#barangJenis').text($(this).data('jenis'));
             $('#barangImage').attr('src', $(this).data('gambar'));
