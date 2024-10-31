@@ -46,39 +46,40 @@ class BarangController extends Controller
     }
 
     public function update(Request $request, $id)
-{
+    {
 
-    $barang = Barang::findOrFail($id);
+        $barang = Barang::findOrFail($id);
 
-    $request->validate([
-        'nama_barang' => 'required|string|max:255',
-        'kondisi' => 'required|string|max:255',
-        'jenis' => 'required|string',
-        'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+        $request->validate([
+            'nama_barang' => 'required|string|max:255',
+            'kondisi' => 'required|string|max:255',
+            'jenis' => 'required|string',
+            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    $barang = Barang::findOrFail($id);
-    $barang->nama_barang = $request->nama_barang;
-    $barang->kondisi = $request->kondisi;
-    $barang->jenis = $request->jenis;
+        $barang = Barang::findOrFail($id);
+        $barang->nama_barang = $request->nama_barang;
+        $barang->kondisi = $request->kondisi;
+        $barang->jenis = $request->jenis;
 
-    // Mengganti gambar jika ada unggahan baru
-    if ($request->hasFile('gambar')) {
-        // Hapus gambar lama jika ada
-        if ($barang->gambar && file_exists(public_path('images/' . $barang->gambar))) {
-            unlink(public_path('images/' . $barang->gambar));
+        // Mengganti gambar jika ada unggahan baru
+        if ($request->hasFile('gambar')) {
+            // Hapus gambar lama jika ada
+            if ($barang->gambar && file_exists(public_path('images/' . $barang->gambar))) {
+                unlink(public_path('images/' . $barang->gambar));
+            }
+
+            // Unggah gambar baru
+            $file = $request->file('gambar');
+            $filename = time() . '.' . $file->getClientOriginalExtension();
+            $file->move(public_path('images'), $filename);
+            $barang->gambar = $filename;
         }
 
-        // Unggah gambar baru
-        $file = $request->file('gambar');
-        $filename = time() . '.' . $file->getClientOriginalExtension();
-        $file->move(public_path('images'), $filename);
-        $barang->gambar = $filename;
+        $barang->save();
+
+        return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui!');
     }
 
-    $barang->save();
-
-    return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui!');
-}
 
 }
