@@ -19,6 +19,12 @@
     <link href="../assets/css/paper-dashboard.css?v=2.0.1" rel="stylesheet" />
     <!-- CSS Just for demo purpose, don't include it in your project -->
     <link href="../assets/demo/demo.css" rel="stylesheet" />
+
+    <style>
+        table td, table th {
+            padding: 10px 15px; /* Tambahkan padding sesuai kebutuhan */
+        }
+    </style>
 </head>
 
 <body class="">
@@ -37,125 +43,58 @@
                 <div class="row">
                     <div class="col-md-12">
                         <div class="card">
-                            <div class="card-header">
+                            <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4 class="card-title">Data Barang</h4>
+                                <button type="button" class="btn btn-primary mr-4" data-toggle="modal" data-target="#addBarangModal">
+                                    <i class="nc-icon nc-simple-add"></i>
+                                    &nbsp; Tambah Barang
+                                </button>
                             </div>
                             <div class="card-body">
+                                @if(session('success'))
+                                    <div class="alert alert-success">{{ session('success') }}</div>
+                                @endif
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead class=" text-primary">
-                                            <th>
-                                                Name
-                                            </th>
-                                            <th>
-                                                Country
-                                            </th>
-                                            <th>
-                                                City
-                                            </th>
-                                            <th class="text-right">
-                                                Salary
-                                            </th>
+                                            <th class="text-center">No</th>
+                                            <th class="text-center">Nama Barang</th>
+                                            <th class="text-center">Gambar</th>
+                                            <th class="text-center">Kondisi</th>
+                                            <th class="text-center">Jenis</th>
+                                            <th class="text-center">Aksi</th>
                                         </thead>
                                         <tbody>
+                                            @foreach ($barangs as $index => $barang)
                                             <tr>
-                                                <td>
-                                                    Dakota Rice
+                                                <td class="text-center">{{ $index + 1 }}</td>
+                                                <td class="text-center">{{ $barang->nama_barang }}</td>
+                                                <td class="text-center">
+                                                    @if ($barang->gambar)
+                                                        <img src="{{ asset('images/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" style="width: 100px; height: auto;">
+                                                    @else
+                                                        Tidak Ada Gambar
+                                                    @endif
                                                 </td>
-                                                <td>
-                                                    Niger
-                                                </td>
-                                                <td>
-                                                    Oud-Turnhout
-                                                </td>
-                                                <td class="text-right">
-                                                    $36,738
+                                                <td class="text-center">{{ $barang->kondisi }}</td>
+                                                <td class="text-center">{{ $barang->jenis }}</td>
+                                                <td class="text-center">
+                                                    <a href="{{ route('barang.show', 1) }}" class="btn btn-info btn-sm" title="View">
+                                                        <i class="fa fa-eye"></i>
+                                                    </a>
+                                                    <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editBarangModal" title="Edit">
+                                                        <i class="fa fa-edit"></i>
+                                                    </button>
+                                                    <form action="{{ route('barang.destroy', 1) }}" method="POST" style="display:inline;">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Are you sure you want to delete this item?');" title="Delete">
+                                                            <i class="fa fa-trash"></i>
+                                                        </button>
+                                                    </form>
                                                 </td>
                                             </tr>
-                                            <tr>
-                                                <td>
-                                                    Minerva Hooper
-                                                </td>
-                                                <td>
-                                                    Curaçao
-                                                </td>
-                                                <td>
-                                                    Sinaai-Waas
-                                                </td>
-                                                <td class="text-right">
-                                                    $23,789
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Sage Rodriguez
-                                                </td>
-                                                <td>
-                                                    Netherlands
-                                                </td>
-                                                <td>
-                                                    Baileux
-                                                </td>
-                                                <td class="text-right">
-                                                    $56,142
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Philip Chaney
-                                                </td>
-                                                <td>
-                                                    Korea, South
-                                                </td>
-                                                <td>
-                                                    Overland Park
-                                                </td>
-                                                <td class="text-right">
-                                                    $38,735
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Doris Greene
-                                                </td>
-                                                <td>
-                                                    Malawi
-                                                </td>
-                                                <td>
-                                                    Feldkirchen in Kärnten
-                                                </td>
-                                                <td class="text-right">
-                                                    $63,542
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Mason Porter
-                                                </td>
-                                                <td>
-                                                    Chile
-                                                </td>
-                                                <td>
-                                                    Gloucester
-                                                </td>
-                                                <td class="text-right">
-                                                    $78,615
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td>
-                                                    Jon Porter
-                                                </td>
-                                                <td>
-                                                    Portugal
-                                                </td>
-                                                <td>
-                                                    Gloucester
-                                                </td>
-                                                <td class="text-right">
-                                                    $98,615
-                                                </td>
-                                            </tr>
+                                            @endforeach
                                         </tbody>
                                     </table>
                                 </div>
@@ -164,6 +103,102 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Modal Tambah Barang -->
+            <div class="modal fade" id="addBarangModal" tabindex="-1" role="dialog" aria-labelledby="addBarangModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="addBarangModalLabel">Tambah Barang</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <form action="{{ route('barang.store') }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="nama_barang">Nama Barang</label>
+                                    <input type="text" class="form-control" id="nama_barang" name="nama_barang" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="barcode">Barcode</label>
+                                    <input type="text" class="form-control" id="barcode" name="barcode" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="kondisi">Kondisi</label>
+                                    <input type="text" class="form-control" id="kondisi" name="kondisi" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="jenis">Jenis</label>
+                                    <select class="form-control" id="jenis" name="jenis" required>
+                                        <option value="">Pilih Jenis</option>
+                                        <option value="properti">Properti</option>
+                                        <option value="perkakas">Perkakas</option>
+                                    </select>
+                                </div>
+                                <div class="form-group-file">
+                                    <label for="gambar">Gambar</label>
+                                    <input type="file" class="form-control-file" id="gambar" name="gambar" accept="image/*" required>
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                                <button type="submit" class="btn btn-primary">Tambah</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+
+           <!-- Modal Edit Barang -->
+{{-- <div class="modal fade" id="editBarangModal" tabindex="-1" role="dialog" aria-labelledby="editBarangModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="editBarangModalLabel">Edit Barang</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="{{ route('barang.update', $barang->id) }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                @method('PUT')
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="nama_barang">Nama Barang</label>
+                        <input type="text" class="form-control" id="nama_barang" name="nama_barang" value="{{ $barang->nama_barang }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="kondisi">Kondisi</label>
+                        <input type="text" class="form-control" id="kondisi" name="kondisi" value="{{ $barang->kondisi }}" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="jenis">Jenis</label>
+                        <select class="form-control" id="jenis" name="jenis" required>
+                            <option value="properti" {{ $barang->jenis == 'properti' ? 'selected' : '' }}>Properti</option>
+                            <option value="perkakas" {{ $barang->jenis == 'perkakas' ? 'selected' : '' }}>Perkakas</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="gambar">Gambar</label><br>
+                        @if ($barang->gambar)
+                            <img src="{{ asset('images/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" style="width: 100px; height: auto;"><br>
+                        @endif
+                        <input type="file" class="form-control-file mt-2" id="gambar" name="gambar" accept="image/*">
+                        <small>*Unggah jika ingin mengganti gambar</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-warning">Update</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div> --}}
+
 
             {{-- footer --}}
             @include('footer')
@@ -183,6 +218,29 @@
     <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/paper-dashboard.min.js?v=2.0.1" type="text/javascript"></script><!-- Paper Dashboard DEMO methods, don't include it in your project! -->
     <script src="../assets/demo/demo.js"></script>
+
+    <script>
+        // Script to populate the edit modal dynamically
+        $(document).on('click', '.edit-barang', function () {
+            var barangId = $(this).data('id');
+            var namaBarang = $(this).data('nama');
+            var kondisiBarang = $(this).data('kondisi');
+            var jenisBarang = $(this).data('jenis');
+            var gambarBarang = $(this).data('gambar');
+
+            $('#editBarangModal').find('#nama_barang').val(namaBarang);
+            $('#editBarangModal').find('#kondisi').val(kondisiBarang);
+            $('#editBarangModal').find('#jenis').val(jenisBarang);
+            $('#editBarangModal').find('form').attr('action', '/barang/' + barangId);
+            if (gambarBarang) {
+                $('#editBarangModal').find('#existing-image').attr('src', '/images/' + gambarBarang).show();
+            } else {
+                $('#editBarangModal').find('#existing-image').hide();
+            }
+
+            $('#editBarangModal').modal('show');
+        });
+    </script>
 </body>
 
 </html>
