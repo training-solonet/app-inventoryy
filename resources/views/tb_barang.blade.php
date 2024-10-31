@@ -79,9 +79,16 @@
                                                 <td class="text-center">{{ $barang->kondisi }}</td>
                                                 <td class="text-center">{{ $barang->jenis }}</td>
                                                 <td class="text-center">
-                                                    <a href="{{ route('barang.show', 1) }}" class="btn btn-info btn-sm" title="View">
+                                                    <a href="#" class="btn btn-info btn-sm" title="Detail" data-toggle="modal" data-target="#detailBarangModal"
+                                                    data-nama="{{ $barang->nama_barang }}"
+                                                    data-barcode="{{ $barang->barcode }}"
+                                                    data-kondisi="{{ $barang->kondisi }}"
+                                                    data-jenis="{{ $barang->jenis }}"
+                                                    data-gambar="{{ asset('images/' . $barang->gambar) }}"
+                                                    data-deskripsi="{{ $barang->deskripsi ?? 'Tidak ada deskripsi' }}">
                                                         <i class="fa fa-eye"></i>
                                                     </a>
+
                                                     <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editBarangModal{{ $barang->id }}" title="Edit">
                                                         <i class="fa fa-edit"></i>
                                                     </a>
@@ -109,7 +116,7 @@
             <div class="modal fade" id="addBarangModal" tabindex="-1" role="dialog" aria-labelledby="addBarangModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-primary">
                             <h5 class="modal-title" id="addBarangModalLabel">Tambah Barang</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -156,9 +163,9 @@
             <!-- Modal Edit Barang -->
             @foreach ($barangs as $barang)
             <div class="modal fade" id="editBarangModal{{ $barang->id }}" tabindex="-1" role="dialog" aria-labelledby="editBarangModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
+                <div class="modal-dialog " role="document">
                     <div class="modal-content">
-                        <div class="modal-header">
+                        <div class="modal-header bg-warning">
                             <h5 class="modal-title" id="editBarangModalLabel">Edit Barang</h5>
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
@@ -202,6 +209,36 @@
             </div>
             @endforeach
 
+            <!-- Modal Detail Barang -->
+            <div class="modal fade" id="detailBarangModal" tabindex="-1" role="dialog" aria-labelledby="detailBarangModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="detailBarangModalLabel"><strong>Detail Barang</strong></h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="text-center">
+                                <img id="barangImage" src="" alt="Gambar Barang" class="img-fluid" style="max-height: 200px;">
+                            </div>
+                            <div class="mt-3">
+                                <p><strong>Nama Barang:</strong> <span id="barangNama"></span></p>
+                                <p><strong>Barcode:</strong> <span id="barangBarcode"></span></p>
+                                <p><strong>Kondisi:</strong> <span id="barangKondisi"></span></p>
+                                <p><strong>Jenis:</strong> <span id="barangJenis"></span></p>
+                                <p><strong>Deskripsi:</strong> <span id="barangDeskripsi"></span></p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Tutup</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
 
 
             {{-- footer --}}
@@ -222,6 +259,18 @@
     <!-- Control Center for Now Ui Dashboard: parallax effects, scripts for the example pages etc -->
     <script src="../assets/js/paper-dashboard.min.js?v=2.0.1" type="text/javascript"></script><!-- Paper Dashboard DEMO methods, don't include it in your project! -->
     <script src="../assets/demo/demo.js"></script>
+
+    <script>
+        $(document).on('click', '[data-toggle="modal"][data-target="#detailBarangModal"]', function () {
+            $('#barangNama').text($(this).data('nama'));
+            $('#barangBarcode').text($(this).data('barcode'));
+            $('#barangKondisi').text($(this).data('kondisi'));
+            $('#barangJenis').text($(this).data('jenis'));
+            $('#barangImage').attr('src', $(this).data('gambar'));
+            $('#barangDeskripsi').text($(this).data('deskripsi'));
+        });
+    </script>
+
 
 
 
