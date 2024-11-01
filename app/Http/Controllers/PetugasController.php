@@ -24,6 +24,7 @@ class PetugasController extends Controller
             'level' => 'required|string|in:operator,admin,supervisor',
         ]);
 
+        // Buat petugas baru
         User::create([
             'name' => $request->nama_petugas,
             'username' => $request->username,
@@ -55,7 +56,7 @@ class PetugasController extends Controller
 
         $petugas->name = $request->nama_petugas;
         $petugas->username = $request->username;
-        if ($request->password) {
+        if ($request->filled('password')) {
             $petugas->password = bcrypt($request->password);
         }
         $petugas->level = $request->level;
