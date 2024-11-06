@@ -16,16 +16,23 @@ class BarangController extends Controller
     }
 
      // Menyimpan data ke database
-    public function store(Request $request)
+     public function store(Request $request)
     {
         $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'kondisi' => 'required|string|max:255',
+            'kode_barcode' => 'required|string',
+            'nama_barang' => 'required|string',
+            'kondisi' => 'required|string',
             'jenis' => 'required|string',
-            'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'gambar' => 'required|image|max:2048',
         ]);
 
+        // Periksa apakah barcode sudah ada
+        if (Barang::where('kode_barcode', $request->kode_barcode)->exists()) {
+            return back()->with('error', 'Barcode sudah ada.')->withInput();
+        }
+
         $barang = new Barang();
+        $barang->kode_barcode = $request->kode_barcode; // Simpan kode barcode
         $barang->nama_barang = $request->nama_barang;
         $barang->kondisi = $request->kondisi;
         $barang->jenis = $request->jenis;
@@ -43,19 +50,23 @@ class BarangController extends Controller
         return redirect()->route('barang.index')->with('success', 'Barang berhasil ditambahkan!');
     }
 
+
+
     public function update(Request $request, $id)
     {
-
         $barang = Barang::findOrFail($id);
 
+        // Validasi data
         $request->validate([
+            'kode_barcode' => 'required|string|max:255|unique:barangs,kode_barcode,' . $barang->id,
             'nama_barang' => 'required|string|max:255',
             'kondisi' => 'required|string|max:255',
             'jenis' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        $barang = Barang::findOrFail($id);
+        // Perbarui data barang
+        $barang->kode_barcode = $request->kode_barcode;
         $barang->nama_barang = $request->nama_barang;
         $barang->kondisi = $request->kondisi;
         $barang->jenis = $request->jenis;
@@ -78,6 +89,7 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil diperbarui!');
     }
+
 
     public function destroy($id)
     {

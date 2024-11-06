@@ -21,6 +21,7 @@
     <link href="../assets/demo/demo.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 
 
@@ -131,6 +132,10 @@
                             @csrf
                             <div class="modal-body">
                                 <div class="form-group">
+                                    <label for="kode_barcode">Kode Barcode</label>
+                                    <input type="text" class="form-control" id="kode_barcode" name="kode_barcode" required>
+                                </div>
+                                <div class="form-group">
                                     <label for="nama_barang">Nama Barang</label>
                                     <input type="text" class="form-control" id="nama_barang" name="nama_barang" required>
                                 </div>
@@ -161,10 +166,11 @@
             </div>
 
 
+
             <!-- Modal Edit Barang -->
             @foreach ($barangs as $barang)
             <div class="modal fade" id="editBarangModal{{ $barang->id }}" tabindex="-1" role="dialog" aria-labelledby="editBarangModalLabel" aria-hidden="true">
-                <div class="modal-dialog " role="document">
+                <div class="modal-dialog" role="document">
                     <div class="modal-content">
                         <div class="modal-header bg-warning">
                             <h5 class="modal-title" id="editBarangModalLabel">Edit Barang</h5>
@@ -176,6 +182,10 @@
                             @csrf
                             @method('PUT')
                             <div class="modal-body">
+                                <div class="form-group">
+                                    <label for="kode_barcode">Kode Barcode</label>
+                                    <input type="text" class="form-control" id="kode_barcode" name="kode_barcode" value="{{ $barang->kode_barcode }}" required>
+                                </div>
                                 <div class="form-group">
                                     <label for="nama_barang">Nama Barang</label>
                                     <input type="text" class="form-control" id="nama_barang" name="nama_barang" value="{{ $barang->nama_barang }}" required>
@@ -209,6 +219,7 @@
                 </div>
             </div>
             @endforeach
+
 
 
             <!-- Modal Detail Barang -->
@@ -342,6 +353,19 @@
             $('#barangDeskripsi').text($(this).data('deskripsi'));
         });
     </script>
+
+    @if(session('error'))
+    <script>
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal!',
+            text: "{{ session('error') }}",
+            confirmButtonColor: '#3085d6',
+            confirmButtonText: 'OK'
+        });
+    </script>
+    @endif
+
 
 
 

@@ -9,12 +9,13 @@ class Barang extends Model
 {
     use HasFactory;
 
+    // Tentukan kolom yang bisa diisi
     protected $fillable = [
+        'kode_barcode',
         'nama_barang',
-        'barcode',
         'kondisi',
         'jenis',
-        'tgl_registrasi',
         'gambar',
     ];
 }
+
