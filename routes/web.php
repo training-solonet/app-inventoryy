@@ -6,11 +6,23 @@ use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BorrowController;
+use App\Http\Controllers\RecapController;
 
 Route::get('/', function () {
     return view('dashboard');
 });
+Route::get('/scan', function () {
+    return view('operator.scan');
+});
+Route::get('/recap', [RecapController::class, 'index'])->name('recap');
+Route::get('/scan', function () {
+    return view('operator.scan'); // atau controller yang sesuai
+})->name('scan');
 
+Route::post('/process-borrow', [BorrowController::class, 'processBorrow'])->name('process.borrow');
+Route::post('/return/{id}', [BorrowController::class, 'updateReturnDate'])->name('update.return');
+Route::post('/borrow/{id}/complete', [BorrowController::class, 'completeBorrow'])->name('complete.borrow');
 
 Route::resource('dashboard', DashboardController::class);
 Route::resource('barang', BarangController::class);
