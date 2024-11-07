@@ -24,7 +24,7 @@
 <body class="">
   <div class="wrapper">
     <div class="sidebar" data-color="white" data-active-color="danger">
-      @include('sidebar')
+      @include('sidebarOPR')
     </div>
     <div class="main-panel">
       <!-- Navbar -->

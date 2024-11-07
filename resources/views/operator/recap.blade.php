@@ -25,7 +25,7 @@
 <body class="">
     <div class="wrapper">
         <div class="sidebar" data-color="white" data-active-color="danger">
-            @include('sidebar')
+            @include('sidebarOPR')
         </div>
         <div class="main-panel">
             <!-- Navbar -->
@@ -38,7 +38,7 @@
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4 class="card-title">Rekap Peminjaman</h4>
-                                <a href="{{ route('scan') }}" class="btn btn-primary mr-5">Pinjam Barang</a>
+                                <a href="{{ route('scan') }}" class="btn btn-primary mr-4">Pinjam Barang</a>
                             </div>
                             <div class="card-body">
                                 <div class="table-responsive">
