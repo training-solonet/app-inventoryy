@@ -21,7 +21,7 @@ class PetugasController extends Controller
             'nama_petugas' => 'required|string|max:255',
             'username' => 'required|string|max:255|unique:users',
             'password' => 'required|string|min:8',
-            'level' => 'required|string|in:operator,admin,supervisor',
+            'role' => 'required|string|in:operator,admin',
         ]);
 
         // Buat petugas baru
@@ -29,7 +29,7 @@ class PetugasController extends Controller
             'name' => $request->nama_petugas,
             'username' => $request->username,
             'password' => bcrypt($request->password),
-            'level' => $request->level,
+            'role' => $request->role,
         ]);
 
         return redirect()->route('petugas.index')->with('success', 'Petugas berhasil ditambahkan!');

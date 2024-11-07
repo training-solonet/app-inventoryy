@@ -9,9 +9,12 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\RecapController;
 
-Route::get('/', function () {
+Route::get('/dashboard', function () {
     return view('dashboard');
 });
+Route::get('/', [DashboardController::class, 'dashboard']);
+Route::get('/dashboard', [DashboardController::class, 'dashboard']);
+
 Route::get('/scan', function () {
     return view('operator.scan');
 });
@@ -23,6 +26,9 @@ Route::get('/scan', function () {
 Route::post('/process-borrow', [BorrowController::class, 'processBorrow'])->name('process.borrow');
 Route::post('/return/{id}', [BorrowController::class, 'updateReturnDate'])->name('update.return');
 Route::post('/borrow/{id}/complete', [BorrowController::class, 'completeBorrow'])->name('complete.borrow');
+
+
+
 
 Route::resource('dashboard', DashboardController::class);
 Route::resource('barang', BarangController::class);
