@@ -35,135 +35,76 @@
       <!-- End Navbar -->
       <div class="content">
         <div class="row">
-          <div class="col-md-12">
-            <div class="card">
-              <div class="card-header">
-                <h4 class="card-title">Data Peminjaman</h4>
-              </div>
-              <div class="card-body">
-                <div class="table-responsive">
-                  <table class="table">
-                    <thead class=" text-primary">
-                      <th>
-                        Name
-                      </th>
-                      <th>
-                        Country
-                      </th>
-                      <th>
-                        City
-                      </th>
-                      <th class="text-right">
-                        Salary
-                      </th>
-                    </thead>
-                    <tbody>
-                      <tr>
-                        <td>
-                          Dakota Rice
-                        </td>
-                        <td>
-                          Niger
-                        </td>
-                        <td>
-                          Oud-Turnhout
-                        </td>
-                        <td class="text-right">
-                          $36,738
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Minerva Hooper
-                        </td>
-                        <td>
-                          Curaçao
-                        </td>
-                        <td>
-                          Sinaai-Waas
-                        </td>
-                        <td class="text-right">
-                          $23,789
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Sage Rodriguez
-                        </td>
-                        <td>
-                          Netherlands
-                        </td>
-                        <td>
-                          Baileux
-                        </td>
-                        <td class="text-right">
-                          $56,142
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Philip Chaney
-                        </td>
-                        <td>
-                          Korea, South
-                        </td>
-                        <td>
-                          Overland Park
-                        </td>
-                        <td class="text-right">
-                          $38,735
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Doris Greene
-                        </td>
-                        <td>
-                          Malawi
-                        </td>
-                        <td>
-                          Feldkirchen in Kärnten
-                        </td>
-                        <td class="text-right">
-                          $63,542
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Mason Porter
-                        </td>
-                        <td>
-                          Chile
-                        </td>
-                        <td>
-                          Gloucester
-                        </td>
-                        <td class="text-right">
-                          $78,615
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>
-                          Jon Porter
-                        </td>
-                        <td>
-                          Portugal
-                        </td>
-                        <td>
-                          Gloucester
-                        </td>
-                        <td class="text-right">
-                          $98,615
-                        </td>
-                      </tr>
-                    </tbody>
-                  </table>
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-header d-flex justify-content-between align-items-center">
+                        <h4 class="card-title">Rekap Peminjaman</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead class="text-primary">
+                                    <th class="text-center">No</th>
+                                    <th class="text-center">Nama Barang</th>
+                                    <th class="text-center">Gambar</th>
+                                    <th class="text-center">Tanggal Peminjaman</th>
+                                    <th class="text-center">Nama Peminjam</th>
+                                    <th class="text-center">Status</th>
+                                    <th class="text-center">Tanggal Kembali</th>
+                                </thead>
+                                <tbody>
+                                    @if(session('borrows'))
+                                        @foreach(session('borrows') as $index => $borrow)
+                                            @php
+                                                $barang = \App\Models\Barang::where('kode_barcode', $borrow->barcode)->first();
+                                            @endphp
+                                            <tr>
+                                                <td class="text-center">{{ $index + 1 }}</td>
+                                                <td class="text-center">{{ $barang ? $barang->nama_barang : 'Tidak Ditemukan' }}</td>
+                                                <td class="text-center">
+                                                    @if ($barang && $barang->gambar)
+                                                        <img src="{{ asset('images/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" style="width: 100px; height: auto;">
+                                                    @else
+                                                        Tidak Ada Gambar
+                                                    @endif
+                                                </td>
+                                                <td class="text-center">
+                                                    {{ \Carbon\Carbon::parse($borrow->borrow_date)->format('d-m-Y') }}<br>
+                                                    <small>{{ \Carbon\Carbon::parse($borrow->borrow_date)->format('H:i:s') }}</small>
+                                                </td>
+                                                <td class="text-center">{{ $borrow->borrower_name }}</td>
+                                                <td class="text-center">
+                                                    @if($borrow->status == 'Sedang Dipinjam')
+                                                        <span class="badge badge-sm border border-danger text-uppercase text-white bg-danger">{{ $borrow->status }}</span>
+                                                    @elseif($borrow->status == 'Dikembalikan')
+                                                        <span class="badge badge-sm border border-success text-uppercase text-white bg-success">{{ $borrow->status }}</span>
+                                                    @else
+                                                        <span class="badge badge-sm border border-secondary text-uppercase text-secondary bg-light">{{ $borrow->status }}</span>
+                                                    @endif
+                                                </td>
+                                                <td class="text-center tanggal-kembali">
+                                                    @if ($borrow->return_date)
+                                                        {{ \Carbon\Carbon::parse($borrow->return_date)->format('d-m-Y') }}<br>
+                                                        <small>{{ \Carbon\Carbon::parse($borrow->return_date)->format('H:i:s') }}</small>
+                                                    @else
+                                                        -
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @else
+                                        <tr>
+                                            <td colspan="8" class="text-center">Tidak ada data peminjaman.</td>
+                                        </tr>
+                                    @endif
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
+    </div>
 
       {{-- footer --}}
       @include('footer')

@@ -48,6 +48,7 @@
               <a class="dropdown-item" href="#">Something else here</a>
             </div>
           </li>
+          <!-- Account Section -->
           <li class="nav-item">
             <a class="nav-link btn-rotate" href="javascript:;">
               <p>
@@ -55,7 +56,19 @@
               </p>
             </a>
           </li>
+          <!-- Logout Button with Icon -->
+          <li class="nav-item">
+            <a class="nav-link btn-rotate" href="{{ route('logout') }}"
+                onclick="event.preventDefault();
+                document.getElementById('logout-form').submit();">
+              <i class="nc-icon nc-button-power"></i> <!-- Add icon here -->
+              <p>Logout</p>
+            </a>
+            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                @csrf
+            </form>
+          </li>
         </ul>
       </div>
     </div>
-  </nav>
+</nav>
