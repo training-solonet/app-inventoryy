@@ -17,5 +17,10 @@ class Barang extends Model
         'jenis',
         'gambar',
     ];
+
+    public function borrows()
+    {
+        return $this->belongsToMany(Borrow::class, 'borrow_barang');
+    }
 }
 

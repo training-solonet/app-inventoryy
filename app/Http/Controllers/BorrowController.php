@@ -3,116 +3,100 @@
 namespace App\Http\Controllers;
 
 use App\Models\Barang;
+use App\Models\Item;
 use Illuminate\Http\Request;
 use App\Models\Borrow;
+use Illuminate\Support\Facades\Log;
 
 class BorrowController extends Controller
 {
+    /**
+     * Handle the borrowing process.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function processBorrow(Request $request)
     {
-        // Validasi input
-        $validatedData = $request->validate([
-            'barcode' => 'required|string',
-            'borrow_date' => 'required|date_format:Y-m-d\TH:i',
-            'borrower_name' => 'required|string|max:255',
+        // Validasi data yang diterima
+        $request->validate([
+            'borrow_id' => 'required|string|unique:borrows,borrow_id',
+            'borrower_name' => 'required|string',
+            'borrow_date' => 'required|date',
+            'cartData' => 'required|json'
         ]);
 
-        // Periksa apakah barcode terdaftar di data barang (dengan nama kolom 'kode_barcode')
-        $barang = Barang::where('kode_barcode', $validatedData['barcode'])->first();
-        if (!$barang) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Barang dengan barcode ini tidak terdaftar.'
-            ], 400);
+        // Decode cartData dari JSON
+        $cartData = json_decode($request->cartData, true);
+
+        // Cek status setiap barang di keranjang
+        foreach ($cartData as $item) {
+            $barang = Barang::where('kode_barcode', $item['barcode'])->first();
+
+            if ($barang && $barang->status == 'Sedang Dipinjam') {
+                return response()->json(['success' => false, 'message' => 'Barang dengan barcode ' . $item['barcode'] . ' sedang dipinjam dan tidak dapat dipinjam.'], 400);
+            }
         }
 
-        // Periksa apakah barang sedang dipinjam dan belum dikembalikan
-        $existingBorrow = Borrow::where('barcode', $validatedData['barcode'])
-                                ->where('status', 'Sedang Dipinjam')
-                                ->first();
-
-        if ($existingBorrow) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Barang ini masih dalam status dipinjam dan belum dikembalikan.'
-            ], 400);
-        }
-
-        // Simpan data ke database dengan status "Sedang Dipinjam"
+        // Buat peminjaman baru
         $borrow = Borrow::create([
-            'barcode' => $validatedData['barcode'],
-            'borrow_date' => $validatedData['borrow_date'],
-            'borrower_name' => $validatedData['borrower_name'],
+            'borrow_id' => $request->borrow_id,
+            'borrower_name' => $request->borrower_name,
+            'borrow_date' => $request->borrow_date,
             'status' => 'Sedang Dipinjam'
         ]);
 
-        // Update session dengan peminjaman terbaru
-        $borrowList = session('borrows', []);
-        $borrowList[] = $borrow;
-
-        // Urutkan daftar peminjaman berdasarkan tanggal pinjam terbaru
-        usort($borrowList, function ($a, $b) {
-            return strtotime($b->borrow_date) - strtotime($a->borrow_date);
-        });
-
-        // Simpan kembali ke session
-        session(['borrows' => $borrowList]);
-
-        return response()->json([
-            'success' => true,
-            'redirect_url' => route('recap')
-        ]);
-    }
-
-
-
-    public function updateReturnDate($id)
-    {
-        $borrow = Borrow::find($id);
-        if (!$borrow) {
-            return response()->json(['error' => 'Data peminjaman tidak ditemukan.'], 404);
+        // Loop melalui setiap item di keranjang dan simpan informasi peminjaman
+        foreach ($cartData as $item) {
+            // Pastikan Anda memiliki relasi yang sesuai
+            $borrow->items()->attach($item['barcode']); // Pastikan barcode ada di cartData
         }
 
-        // Mengupdate tanggal kembali dan status
-        $borrow->return_date = now(); // Mengatur tanggal kembali ke waktu sekarang
-        $borrow->status = 'Dikembalikan'; // Mengubah status
-        $borrow->save();
-
-        return response()->json([
-            'success' => true,
-            'return_date' => $borrow->return_date->format('d-m-Y H:i:s') // Format sesuai yang diinginkan
-        ]);
+        return response()->json(['success' => true, 'message' => 'Peminjaman berhasil diproses!']);
     }
 
-
-    public function completeBorrow(Request $request, $id)
+    /**
+     * Generate a unique borrow ID.
+     *
+     * @return string
+     */
+    private function generateBorrowId()
     {
-        $borrow = Borrow::findOrFail($id);
+        $latestBorrow = Borrow::latest('id')->first();
 
-        // Mengubah status dan menyimpan tanggal kembali
-        $borrow->status = 'Dikembalikan';
-        $borrow->return_date = now();
-        $borrow->save();
+        $newIdNumber = $latestBorrow ? intval(substr($latestBorrow->borrow_id, -4)) + 1 : 1;
+        return 'BORROW' . str_pad($newIdNumber, 4, '0', STR_PAD_LEFT);
+    }
 
-        // Perbarui sesi
-        $borrowList = session('borrows', []);
-        foreach ($borrowList as $index => $sessionBorrow) {
-            if ($sessionBorrow->id == $borrow->id) {
-                $sessionBorrow->status = 'Dikembalikan';
-                $sessionBorrow->return_date = $borrow->return_date;
-                break;
-            }
-        }
-        session(['borrows' => $borrowList]);
-
-        return response()->json([
-            'return_date' => $borrow->return_date->format('d-m-Y H:i:s'),
-            'status' => $borrow->status
-        ]);
+    /**
+     * Display the borrow form with a generated borrow ID.
+     *
+     * @return \Illuminate\Contracts\View\View
+     */
+    public function showBorrowForm()
+    {
+        $borrowId = $this->generateBorrowId();
+        return view('operator.scan', compact('borrowId'));
     }
 
 
+    /**
+     * Get item details by barcode.
+     *
+     * @param string $barcode
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getItemDetails($barcode)
+    {
+        $barang = Barang::where('kode_barcode', $barcode)->first();
+
+        if (!$barang) {
+            return response()->json(['error' => 'Barang tidak ditemukan'], 404);
+        }
+
+        return response()->json([
+            'name' => $barang->nama_barang,
+            'barcode' => $barang->kode_barcode,
+        ]);
+    }
 }
-
-
-

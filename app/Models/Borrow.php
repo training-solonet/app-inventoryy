@@ -1,6 +1,5 @@
 <?php
 
-// Borrow.php
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -11,12 +10,16 @@ class Borrow extends Model
     use HasFactory;
 
     protected $fillable = [
-        'barcode',
-        'borrower_name',
+        'borrow_id',
+        'status',
         'borrow_date',
-        'status',         // Tambahkan kolom status
-        'return_date',    // Tambahkan kolom tanggal kembali
+        'borrower_name',
+        'return_date',
     ];
+
+    // Definisikan relasi satu peminjaman bisa memiliki banyak barang
+    public function items()
+    {
+        return $this->belongsToMany(Item::class, 'borrow_item', 'borrow_id', 'barcode');
+    }
 }
-
-
