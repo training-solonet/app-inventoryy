@@ -11,6 +11,7 @@
 
 <div class="sidebar-wrapper" id="sidebar">
     <ul class="nav">
+
         <!-- Link to 'scan' page for Peminjaman -->
         <li class="{{ request()->routeIs('scan') ? 'active' : '' }}">
             <a href="{{ route('scan') }}">

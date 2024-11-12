@@ -10,7 +10,7 @@ class CreateBorrowsTable extends Migration
     {
         Schema::create('borrows', function (Blueprint $table) {
             $table->id(); // ID unik
-            $table->string('barcode'); // Barcode barang yang dipinjam, tidak unik
+            $table->string('borrow_id')->unique(); // Kolom borrow_id yang unik
             $table->enum('status', ['Sedang Dipinjam', 'Dikembalikan']); // Status peminjaman
             $table->dateTime('borrow_date'); // Tanggal dan waktu peminjaman
             $table->string('borrower_name'); // Nama peminjam
@@ -19,8 +19,11 @@ class CreateBorrowsTable extends Migration
         });
     }
 
+
     public function down()
     {
-        Schema::dropIfExists('borrows'); // Menghapus tabel jika migrasi dibatalkan
+        // Hapus tabel yang memiliki foreign key terlebih dahulu
+        Schema::dropIfExists('borrow_barang'); // Pastikan untuk mengganti dengan nama tabel yang sesuai
+        Schema::dropIfExists('borrows'); // Menghapus tabel borrows
     }
 }

@@ -11,6 +11,7 @@ class CreateBarangsTable extends Migration
     {
         Schema::create('barangs', function (Blueprint $table) {
             $table->id();
+            $table->string('kode_barcode')->unique(); // Menambahkan kode_barcode
             $table->string('nama_barang');
             $table->string('kondisi');
             $table->string('jenis');
@@ -18,6 +19,7 @@ class CreateBarangsTable extends Migration
             $table->string('gambar')->nullable();
             $table->timestamps();
         });
+
     }
 
     public function down()
