@@ -8,10 +8,13 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::orderBy('created_at', 'desc')->get(); // Mengurutkan barang terbaru di paling atas
+        $barangs = Barang::orderBy('created_at', 'desc')->get();
+        $totalBarangs = Barang::count(); // Menghitung total data barang
+
         return view('tb_barang', [
             "active" => 'barang',
-            "barangs" => $barangs
+            "barangs" => $barangs,
+            "totalBarangs" => $totalBarangs // Mengirimkan ke view tb_barang
         ]);
     }
 
