@@ -29,15 +29,6 @@ class BorrowController extends Controller
         // Decode cartData dari JSON
         $cartData = json_decode($request->cartData, true);
 
-        // Cek status setiap barang di keranjang
-        foreach ($cartData as $item) {
-            $barang = Barang::where('kode_barcode', $item['barcode'])->first();
-
-            if ($barang && $barang->status == 'Sedang Dipinjam') {
-                return response()->json(['success' => false, 'message' => 'Barang dengan barcode ' . $item['barcode'] . ' sedang dipinjam dan tidak dapat dipinjam.'], 400);
-            }
-        }
-
         // Buat peminjaman baru
         $borrow = Borrow::create([
             'borrow_id' => $request->borrow_id,
@@ -97,6 +88,20 @@ class BorrowController extends Controller
         return response()->json([
             'name' => $barang->nama_barang,
             'barcode' => $barang->kode_barcode,
+        ]);
+    }
+
+    public function detail($borrow_id)
+    {
+        $borrow = Borrow::with('items')->where('borrow_id', $borrow_id)->first();
+
+        if (!$borrow) {
+            return redirect()->route('recap')->with('error', 'Data peminjaman tidak ditemukan.');
+        }
+
+        return view('operator.detail', [
+            'borrow' => $borrow,
+            'items' => $borrow->items
         ]);
     }
 }
