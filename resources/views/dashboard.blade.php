@@ -9,7 +9,7 @@
                 <p class="text-muted">Menampilkan ringkasan data terbaru</p>
             </div>
         </div>
-        
+
         <!-- Cards -->
         <div class="row">
             <!-- Data Barang -->
@@ -99,7 +99,7 @@
                 </div>
             </div>
         </div>
-        
+
         <!-- Additional Content -->
         <div class="row">
             <!-- Progress Bar Section -->

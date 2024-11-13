@@ -41,4 +41,18 @@ class RecapController extends Controller
         // Mengembalikan view detail dengan data peminjaman dan barang
         return view('operator.detail', compact('borrow', 'items'));
     }
+
+    public function detail($borrow_id)
+    {
+        $borrow = Borrow::with('items')->where('borrow_id', $borrow_id)->first();
+
+        if (!$borrow) {
+            return redirect()->route('recap')->with('error', 'Data peminjaman tidak ditemukan.');
+        }
+
+        return view('operator.detail', [
+            'borrow' => $borrow,
+            'items' => $borrow->items
+        ]);
+    }
 }
