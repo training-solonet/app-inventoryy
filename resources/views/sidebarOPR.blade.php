@@ -29,3 +29,15 @@
         </li>
     </ul>
 </div>
+<style>
+  
+    /* Add this CSS in your custom stylesheet */
+  .sidebar .nav li.active > a {
+      color: #ADD8E6 !important; /* Light blue */
+  }
+  
+  .sidebar .nav li.active > a i {
+      color: #ADD8E6 !important; /* Light blue for icons */
+  }
+  
+  </style>
