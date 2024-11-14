@@ -16,10 +16,9 @@ class Borrow extends Model
         'borrower_name',
         'return_date',
     ];
-
-    // Definisikan relasi satu peminjaman bisa memiliki banyak barang
-    public function items()
+    
+    public function borrowItems()
     {
-        return $this->belongsToMany(Item::class, 'borrow_item', 'borrow_id', 'barcode');
+        return $this->hasMany(BorrowItem::class, 'borrow_id');
     }
 }

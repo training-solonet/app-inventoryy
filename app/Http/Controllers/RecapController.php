@@ -52,14 +52,19 @@ class RecapController extends Controller
     }
 
     // Menampilkan detail peminjaman berdasarkan borrow_id
-    public function showDetail($borrow_id)
+    public function showBorrowDetails($borrowId)
     {
-        $borrow = Borrow::where('borrow_id', $borrow_id)->firstOrFail();
+        $borrow = Borrow::with('borrowItems.barang')->where('borrow_id', $borrowId)->first();
 
-        $items = $borrow->items ?? collect();
+        if ($borrow && $borrow->borrowItems->isEmpty()) {
+            dd('Tidak ada barang yang dipinjam.');
+        }
 
-        return view('operator.detail', compact('borrow', 'items'));
+        return view('operator.detail', compact('borrow'));
     }
+
+
+
 
     // Menampilkan detail peminjaman
     public function detail($borrow_id)

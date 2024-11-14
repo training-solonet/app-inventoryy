@@ -6,6 +6,7 @@ use App\Models\Barang;
 use App\Models\Item;
 use Illuminate\Http\Request;
 use App\Models\Borrow;
+use App\Models\BorrowItem;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
@@ -30,6 +31,22 @@ class BorrowController extends Controller
         // Decode cartData dari JSON
         $cartData = json_decode($request->cartData, true);
 
+        // Cek apakah ada barang yang masih dipinjam
+        foreach ($cartData as $item) {
+            // Cek apakah barang dengan barcode yang dipilih masih dalam status "Sedang Dipinjam"
+            $barang = Barang::where('kode_barcode', $item['barcode'])->first();
+            if ($barang) {
+                // Cek jika barang tersebut masih dipinjam
+                $isBorrowed = BorrowItem::where('barcode', $item['barcode'])
+                    ->where('status', 'Sedang Dipinjam')
+                    ->exists();
+
+                if ($isBorrowed) {
+                    return response()->json(['success' => false, 'message' => 'Barang dengan barcode ' . $item['barcode'] . ' masih dipinjam dan tidak bisa dipinjam kembali.']);
+                }
+            }
+        }
+
         // Buat peminjaman baru
         $borrow = Borrow::create([
             'borrow_id' => $request->borrow_id,
@@ -46,6 +63,7 @@ class BorrowController extends Controller
 
         return response()->json(['success' => true, 'message' => 'Peminjaman berhasil diproses!']);
     }
+
 
     /**
      * Generate a unique borrow ID.

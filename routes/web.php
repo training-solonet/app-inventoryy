@@ -46,9 +46,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-item-details/{barcode}', [BorrowController::class, 'getItemDetails']);
     Route::post('/borrow/remove-from-cart', [BorrowController::class, 'removeFromCart'])->name('remove.from.cart');
     Route::get('/borrow', [BorrowController::class, 'showBorrowForm'])->name('show.borrow.form');
-    Route::get('/borrow/{borrow_id}/detail', [RecapController::class, 'showDetail'])->name('borrow.detail');
-    Route::post('/borrow/complete/{id}', [RecapController::class, 'updateReturnDate'])->name('complete.borrow');
-
+    Route::get('/borrow/{borrowId}/detail', [RecapController::class, 'showBorrowDetails'])->name('borrow.details');
 });
 
 // Route Resource
