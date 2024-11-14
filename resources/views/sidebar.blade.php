@@ -39,7 +39,7 @@
   </div>
 </div>
 <style>
-  
+
   /* Add this CSS in your custom stylesheet */
 .sidebar .nav li.active > a {
     color: #ADD8E6 !important; /* Light blue */

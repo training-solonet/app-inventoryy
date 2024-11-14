@@ -61,9 +61,18 @@
                                 </button>
                             </div>
                             <div class="card-body">
+                                <!-- Search Input -->
+                                <div class="input-group no-border">
+                                    <input type="text" id="searchInput" class="form-control" placeholder="Cari berdasarkan nama, kondisi, atau jenis...">
+                                    <div class="input-group-append">
+                                        <div class="input-group-text">
+                                            <i class="nc-icon nc-zoom-split"></i>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="table-responsive">
-                                    <table class="table">
-                                        <thead class=" text-primary">
+                                    <table class="table" id="barangTable">
+                                        <thead class="text-primary">
                                             <th class="text-center">No</th>
                                             <th class="text-center">Nama Barang</th>
                                             <th class="text-center">Gambar</th>
@@ -87,23 +96,23 @@
                                                 <td class="text-center">{{ $barang->jenis }}</td>
                                                 <td class="text-center">
                                                     <a href="#" class="btn btn-info btn-sm" title="Detail" data-toggle="modal" data-target="#detailBarangModal"
-                                                    data-nama="{{ $barang->nama_barang }}"
-                                                    data-kondisi="{{ $barang->kondisi }}"
-                                                    data-jenis="{{ $barang->jenis }}"
-                                                    data-gambar="{{ asset('images/' . $barang->gambar) }}"
-                                                    data-deskripsi="{{ $barang->deskripsi ?? 'Tidak ada deskripsi' }}">
-                                                        <i class="fas fa-info-circle"></i> <!-- Ikon info -->
+                                                       data-nama="{{ $barang->nama_barang }}"
+                                                       data-kondisi="{{ $barang->kondisi }}"
+                                                       data-jenis="{{ $barang->jenis }}"
+                                                       data-gambar="{{ asset('images/' . $barang->gambar) }}"
+                                                       data-deskripsi="{{ $barang->deskripsi ?? 'Tidak ada deskripsi' }}">
+                                                        <i class="fas fa-info-circle"></i>
                                                     </a>
 
                                                     <a href="#" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editBarangModal{{ $barang->id }}" title="Edit">
-                                                        <i class="fas fa-pencil-alt"></i> <!-- Ikon pencil -->
+                                                        <i class="fas fa-pencil-alt"></i>
                                                     </a>
 
                                                     <form id="delete-form-{{ $barang->id }}" action="{{ route('barang.destroy', $barang->id) }}" method="POST" style="display:inline;">
                                                         @csrf
                                                         @method('DELETE')
                                                         <button type="button" class="btn btn-danger btn-sm" onclick="confirmDelete({{ $barang->id }})" title="Delete">
-                                                            <i class="fas fa-trash-alt"></i> <!-- Ikon trash-alt -->
+                                                            <i class="fas fa-trash-alt"></i>
                                                         </button>
                                                     </form>
                                                 </td>
@@ -112,11 +121,18 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <div class="d-flex justify-content-center mt-3">
+                                    <!-- Pagination links with Bootstrap pagination style -->
+                                    <ul class="pagination">
+                                        {{ $barangs->links('pagination::bootstrap-4') }}
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
 
             <!-- Modal Tambah Barang -->
             <div class="modal fade" id="addBarangModal" tabindex="-1" role="dialog" aria-labelledby="addBarangModalLabel" aria-hidden="true">
@@ -365,6 +381,26 @@
         });
     </script>
     @endif
+
+    <script>
+        // JavaScript for Search Filter
+        document.getElementById('searchInput').addEventListener('keyup', function() {
+            const searchValue = this.value.toLowerCase();
+            const tableRows = document.querySelectorAll('#barangTable tbody tr');
+
+            tableRows.forEach(row => {
+                const nama = row.cells[1].textContent.toLowerCase();
+                const kondisi = row.cells[3].textContent.toLowerCase();
+                const jenis = row.cells[4].textContent.toLowerCase();
+
+                if (nama.includes(searchValue) || kondisi.includes(searchValue) || jenis.includes(searchValue)) {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    </script>
 
 
 

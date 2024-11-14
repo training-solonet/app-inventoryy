@@ -3,10 +3,11 @@
 <div class="content">
     <div class="container-fluid">
         <!-- Header -->
-        <div class="row mb-4">
+        <div class="row mb-1">
             <div class="col-12 text-center">
-                <h2 class="font-weight-bold">Dashboard Overview</h2>
-                <p class="text-muted">Menampilkan ringkasan data terbaru</p>
+                <h2 class="font-weight-bold" style="color: rgb(0, 0, 0); font-size: 2.5rem; ">
+                    Dashboard Overview
+                </h2>
             </div>
         </div>
 
@@ -29,7 +30,9 @@
                                     <div class="progress mt-2">
                                         <div class="progress-bar bg-warning" role="progressbar" style="width: 60%;" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100">60%</div>
                                     </div>
-                                    <small class="text-muted">Pencapaian target stok barang</small>
+                                    <small class="text-muted">Pencapaian target</small>
+                                    <br>
+                                    <small class="text-muted">stok Barang</small>
                                 </div>
                             </div>
                         </div>
@@ -57,14 +60,16 @@
                                 <div class="numbers">
                                     <p class="card-category">Data Petugas</p>
                                     <p class="card-title">{{ $totalPetugas }}</p>
-                                    <small class="text-muted">Jumlah petugas aktif</small>
+                                    <small class="text-muted">Jumlah petugas</small>
+                                    <br>
+                                    <small class="text-muted">Aktif</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <hr>
-                        <div class="stats">
+                        <div class="stats mb-4">
                             <i class="fa fa-clock-o"></i> Update terbaru 1 jam lalu
                         </div>
                     </div>
@@ -85,14 +90,16 @@
                                 <div class="numbers">
                                     <p class="card-category">Barang Dipinjam</p>
                                     <p class="card-title">{{ $totalBorrowedItems }}</p>
-                                    <small class="text-muted">Total barang yang sedang dipinjam</small>
+                                    <small class="text-muted">Total barang yang</small>
+                                    <br>
+                                    <small class="text-muted">sedang Dipinjam</small>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="card-footer">
                         <hr>
-                        <div class="stats">
+                        <div class="stats mb-4">
                             <i class="fa fa-refresh"></i> Update sekarang
                         </div>
                     </div>
@@ -115,11 +122,11 @@
                             <div class="progress-bar bg-success" role="progressbar" style="width: 75%;" aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">75%</div>
                         </div>
                         <p>Pengembalian Barang</p>
-                        <div class="progress mb-3">
+                        <div class="progress mb-4">
                             <div class="progress-bar bg-info" role="progressbar" style="width: 50%;" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100">50%</div>
                         </div>
                         <p>Petugas Aktif</p>
-                        <div class="progress mb-3">
+                        <div class="progress mb-5">
                             <div class="progress-bar bg-danger" role="progressbar" style="width: 90%;" aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">90%</div>
                         </div>
                     </div>
@@ -134,15 +141,15 @@
                     </div>
                     <div class="card-body">
                         <ul class="list-group">
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <li class="list-group-item d-flex justify-content-between align-items-center mb-5">
                                 <span><i class="fa fa-check-circle text-success"></i> Total Barang di Gudang</span>
                                 <span>{{ $totalBarangs }}</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <li class="list-group-item d-flex justify-content-between align-items-center mb-5">
                                 <span><i class="fa fa-user text-info"></i> Petugas Baru Ditambahkan</span>
                                 <span>{{ $recentPetugas }}</span>
                             </li>
-                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <li class="list-group-item d-flex justify-content-between align-items-center mb-5">
                                 <span><i class="fa fa-exclamation-triangle text-warning"></i> Barang Kembali Tertunda</span>
                                 <span>{{ $pendingReturns }}</span>
                             </li>
