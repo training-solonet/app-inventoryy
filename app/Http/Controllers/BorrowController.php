@@ -7,6 +7,7 @@ use App\Models\Item;
 use Illuminate\Http\Request;
 use App\Models\Borrow;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class BorrowController extends Controller
 {
@@ -98,6 +99,9 @@ class BorrowController extends Controller
         if (!$borrow) {
             return redirect()->route('recap')->with('error', 'Data peminjaman tidak ditemukan.');
         }
+
+        // Format tanggal peminjaman dengan Carbon
+        $borrow->borrow_date = Carbon::parse($borrow->borrow_date)->format('d-m-Y');
 
         return view('operator.detail', [
             'borrow' => $borrow,

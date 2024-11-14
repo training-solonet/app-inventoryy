@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Barang;
 use Illuminate\Http\Request;
 
@@ -8,7 +9,7 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::orderBy('created_at', 'desc')->get();
+        $barangs = Barang::orderBy('created_at', 'desc')->paginate(3); // Menggunakan paginate dengan 10 barang per halaman
         $totalBarangs = Barang::count(); // Menghitung total data barang
 
         return view('tb_barang', [
@@ -18,8 +19,9 @@ class BarangController extends Controller
         ]);
     }
 
-     // Menyimpan data ke database
-     public function store(Request $request)
+
+    // Menyimpan data ke database
+    public function store(Request $request)
     {
         $request->validate([
             'kode_barcode' => 'required|string',
@@ -107,7 +109,4 @@ class BarangController extends Controller
 
         return redirect()->route('barang.index')->with('success', 'Barang berhasil dihapus!');
     }
-
-
-
 }

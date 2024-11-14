@@ -31,12 +31,37 @@
                                 <a href="{{ route('scan') }}" class="btn btn-primary mr-5">Pinjam Barang</a>
                             </div>
                             <div class="card-body">
+                                <form method="GET" action="{{ route('recap') }}" class="mb-4">
+                                    <div class="row">
+                                        <!-- Filter Tanggal Mulai -->
+                                        <div class="col-md-3 mt-3">
+                                            <input type="date" name="start_date" class="form-control" value="{{ request()->input('start_date') }}" placeholder="Tanggal Mulai">
+                                        </div>
+
+                                        <!-- Filter Tanggal Akhir -->
+                                        <div class="col-md-3 mt-3">
+                                            <input type="date" name="end_date" class="form-control" value="{{ request()->input('end_date') }}" placeholder="Tanggal Akhir">
+                                        </div>
+
+                                        <!-- Filter Pencarian -->
+                                        <div class="col-md-4 mt-3">
+                                            <input type="text" name="search" class="form-control" value="{{ request()->input('search') }}" placeholder="Cari berdasarkan Nama Peminjam atau ID Peminjaman">
+                                        </div>
+
+                                        <!-- Tombol Filter -->
+                                        <div class="col-md-2">
+                                            <button type="submit" class="btn btn-outline-primary text-primary">Filter</button>
+                                        </div>
+                                    </div>
+                                </form>
+
                                 <div class="table-responsive">
                                     <table class="table">
                                         <thead class="text-primary">
                                             <th class="text-center">No</th>
                                             <th class="text-center">No Peminjaman</th>
                                             <th class="text-center">Nama Peminjam</th>
+                                            <th class="text-center">Tanggal Peminjaman</th> <!-- Kolom untuk tanggal peminjaman -->
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Aksi</th>
                                         </thead>
@@ -44,9 +69,10 @@
                                             @if($borrows->isNotEmpty())
                                                 @foreach($borrows as $index => $borrow)
                                                     <tr>
-                                                        <td class="text-center">{{ $index + 1 }}</td>
+                                                        <td class="text-center">{{ $borrows->firstItem() + $index }}</td>
                                                         <td class="text-center">{{ $borrow->borrow_id }}</td>
                                                         <td class="text-center">{{ $borrow->borrower_name }}</td>
+                                                        <td class="text-center">{{ \Carbon\Carbon::parse($borrow->borrow_date)->format('d-m-Y') }}</td> <!-- Tanggal Peminjaman -->
                                                         <td class="text-center">
                                                             <span class="badge badge-{{ $borrow->status == 'Sedang Dipinjam' ? 'danger' : 'success' }}">
                                                                 {{ $borrow->status }}
@@ -61,17 +87,26 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="5" class="text-center">Tidak ada data peminjaman.</td>
+                                                    <td colspan="6" class="text-center">Tidak ada data peminjaman.</td>
                                                 </tr>
                                             @endif
                                         </tbody>
                                     </table>
+                                </div>
+
+                                <!-- Pagination -->
+                                <div class="d-flex justify-content-center mt-3">
+                                    <!-- Pagination links with Bootstrap pagination style -->
+                                    <ul class="pagination">
+                                        {{ $borrows->links('pagination::bootstrap-4') }}
+                                    </ul>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
             @include('footer')
         </div>
     </div>
