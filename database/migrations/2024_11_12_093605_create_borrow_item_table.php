@@ -11,10 +11,14 @@ class CreateBorrowItemTable extends Migration
         Schema::create('borrow_item', function (Blueprint $table) {
             $table->id();
             $table->foreignId('borrow_id')->constrained()->onDelete('cascade');
-            $table->string('barcode'); 
+            $table->string('barcode');
+            // Menambahkan foreign key untuk barcode
+            $table->foreign('barcode')->references('kode_barcode')->on('barangs')->onDelete('cascade');
+            $table->string('status')->default('Sedang Dipinjam'); // Status barang
             $table->timestamps();
         });
     }
+
 
     public function down()
     {

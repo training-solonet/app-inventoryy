@@ -22,8 +22,7 @@ class CreateBorrowsTable extends Migration
 
     public function down()
     {
-        // Hapus tabel yang memiliki foreign key terlebih dahulu
-        Schema::dropIfExists('borrow_barang'); // Pastikan untuk mengganti dengan nama tabel yang sesuai
+        Schema::dropIfExists('borrow_item'); // Menghapus tabel borrow_item terlebih dahulu
         Schema::dropIfExists('borrows'); // Menghapus tabel borrows
     }
 }

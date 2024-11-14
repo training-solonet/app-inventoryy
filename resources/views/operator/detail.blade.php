@@ -33,71 +33,42 @@
 </head>
 
 <body class="bg-light-blue">
-    <div class="container mt-5">
-        <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 class="text-white">Detail Peminjaman</h4>
-            <a href="{{ route('recap') }}" class="btn btn-primary">Kembali ke Rekap</a>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-md-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="table-responsive">
-                            <table class="table table-bordered">
-                                <thead class="text-primary">
-                                    <tr>
-                                        <th class="text-center">No</th>
-                                        <th class="text-center">Nama Barang</th>
-                                        <th class="text-center">Tanggal Peminjaman</th>
-                                        <th class="text-center">Nama Peminjam</th>
-                                        <th class="text-center">Status</th>
-                                        <th class="text-center">Tanggal Kembali</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    @if ($items->isNotEmpty())
-                                        @foreach ($borrow->items as $index => $item)
-                                            <tr>
-                                                <td class="text-center">{{ $index + 1 }}</td>
-                                                <td class="text-center">{{ $item->nama_barang }}</td>
-                                                <td class="text-center">
-                                                    {{ \Carbon\Carbon::parse($borrow->borrow_date)->format('d-m-Y') }}
-                                                </td>
-                                                <td class="text-center">{{ $borrow->borrower_name }}</td>
-                                                <td class="text-center">
-                                                    <span
-                                                        class="badge badge-{{ $borrow->status == 'Sedang Dipinjam' ? 'danger' : 'success' }}">
-                                                        {{ $borrow->status }}
-                                                    </span>
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($borrow->status == 'Sedang Dipinjam')
-                                                        <form
-                                                            action="{{ route('complete.borrow', ['id' => $borrow->borrow_id]) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            <button type="submit" class="btn btn-success">Selesai
-                                                                Pinjam</button>
-                                                        </form>
-                                                    @else
-                                                        {{ \Carbon\Carbon::parse($borrow->return_date)->format('d-m-Y') }}
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    @else
-                                        <tr>
-                                            <td colspan="6" class="text-center">Tidak ada barang yang dipinjam.</td>
-                                        </tr>
-                                    @endif
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-            </div>
+    <!-- resources/views/operator/detail.blade.php -->
+    <div class="container mt-4">
+        <h2>Detail Peminjaman - {{ $borrow->borrow_id }}</h2>
+        <p><strong>Nama Peminjam:</strong> {{ $borrow->borrower_name }}</p>
+        <p><strong>Status:</strong> {{ $borrow->status }}</p>
+        <p><strong>Tanggal Peminjaman:</strong> {{ \Carbon\Carbon::parse($borrow->borrow_date)->format('d-m-Y') }}</p>
+        <p><strong>Tanggal Kembali:</strong>
+            {{ $borrow->return_date ? \Carbon\Carbon::parse($borrow->return_date)->format('d-m-Y') : 'Belum Kembali' }}
+        </p>
+
+        <h4>Daftar Barang yang Dipinjam:</h4>
+        <div class="table-responsive">
+            <table class="table table-bordered">
+                <thead class="thead-light">
+                    <tr>
+                        <th class="text-center">No</th>
+                        <th class="text-center">Nama Barang</th>
+                        <th class="text-center">Kode Barcode</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach ($borrow->borrowItems as $index => $borrowItem)
+                        <tr>
+                            <td class="text-center">{{ $index + 1 }}</td>
+                            <td class="text-center">{{ $borrowItem->barang->nama_barang }}</td>
+                            <td class="text-center">{{ $borrowItem->barang->kode_barcode }}</td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
         </div>
     </div>
+</body>
+
+
+
 
     <script src="{{ asset('assets/js/core/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/core/popper.min.js') }}"></script>

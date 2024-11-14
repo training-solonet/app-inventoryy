@@ -79,9 +79,7 @@
                                                             </span>
                                                         </td>
                                                         <td class="text-center">
-                                                            <a href="{{ route('borrow.detail', ['borrow_id' => $borrow->borrow_id]) }}" class="btn btn-info">
-                                                                Lihat Detail
-                                                            </a>
+                                                            <a href="{{ route('borrow.details', ['borrowId' => $borrow->borrow_id]) }}" class="btn btn-info">Lihat Detail</a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
