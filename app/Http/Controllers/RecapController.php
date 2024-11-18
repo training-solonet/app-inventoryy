@@ -31,6 +31,23 @@ class RecapController extends Controller
             });
         }
 
+        $status = $request->input('status', 'Sedang Dipinjam'); // Default to "Sedang Dipinjam"
+        $query = Borrow::query();
+
+        // Filter by status
+        $status = $request->input('status', 'Sedang Dipinjam');
+        if ($status !== 'Semua') {
+            if ($status == 'Sedang Dipinjam') {
+                $query->whereHas('borrowItems', function ($q) {
+                    $q->where('status', 'Sedang Dipinjam');
+                });
+            } else {
+                $query->whereDoesntHave('borrowItems', function ($q) {
+                    $q->where('status', 'Sedang Dipinjam');
+                });
+            }
+        }
+
         // Urutkan data terbaru di paling atas
         $borrows = $query->orderBy('borrow_date', 'desc')->paginate(5);
 
