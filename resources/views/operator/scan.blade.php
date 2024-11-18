@@ -46,7 +46,8 @@
                                         </div>
                                         <div class="col-md-4">
                                             <label for="borrow_date" class="form-label">Tanggal Peminjaman:</label>
-                                            <input type="datetime-local" id="borrow_date" name="borrow_date" class="form-control" required>
+                                            <input type="datetime-local" id="borrow_date" name="borrow_date"
+                                                class="form-control" required>
                                         </div>
                                     </div>
                                     <input type="hidden" id="cartData" name="cartData">
@@ -58,6 +59,8 @@
                                                 <tr>
                                                     <th>No</th>
                                                     <th>Nama Barang</th>
+                                                    <th>Gambar</th>
+                                                    <th>Kondisi</th>
                                                     <th>Barcode</th>
                                                     <th>Aksi</th>
                                                 </tr>
@@ -67,6 +70,7 @@
                                             </tbody>
                                         </table>
                                     </div>
+
 
                                     <!-- Proses Peminjaman Button -->
                                     <button type="submit" class="btn btn-success mt-3">Proses Peminjaman</button>
@@ -116,7 +120,9 @@
                             } else {
                                 cartData.push({
                                     barcode: data.barcode,
-                                    name: data.name
+                                    name: data.name,
+                                    image: data.image, // Adding image field
+                                    condition: data.condition // Adding condition field
                                 });
                                 updateCartTable();
                                 document.getElementById('barcode').value = '';
@@ -132,20 +138,24 @@
             }
         }
 
+
         function updateCartTable() {
             const cartTableBody = document.getElementById('cartTableBody');
             cartTableBody.innerHTML = '';
             cartData.forEach((item, index) => {
                 const row = `<tr>
-                    <td>${index + 1}</td>
-                    <td>${item.name}</td>
-                    <td>${item.barcode}</td>
-                    <td><button type="button" class="btn btn-danger btn-sm" onclick="removeFromCart('${item.barcode}')">Hapus</button></td>
-                </tr>`;
+            <td>${index + 1}</td>
+            <td>${item.name}</td>
+            <td><img src="${item.image}" alt="Gambar Barang" style="width:50px;height:50px;"></td>
+            <td>${item.condition}</td> <!-- Condition column -->
+            <td>${item.barcode}</td>
+            <td><button type="button" class="btn btn-danger btn-sm" onclick="removeFromCart('${item.barcode}')">Hapus</button></td>
+            </tr>`;
                 cartTableBody.insertAdjacentHTML('beforeend', row);
             });
             document.getElementById('cartData').value = JSON.stringify(cartData);
         }
+
 
         function removeFromCart(barcode) {
             cartData = cartData.filter(item => item.barcode !== barcode);
@@ -177,7 +187,7 @@
                 .catch(error => Swal.fire('Error', 'Terjadi kesalahan saat menghubungi server.', 'error'));
         }
     </script>
-    
+
 </body>
 
 </html>

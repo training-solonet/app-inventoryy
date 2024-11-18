@@ -17,6 +17,7 @@
     <style>
         body {
             font-family: 'Poppins', sans-serif;
+            background-color: #0c00ad;
         }
 
         .table-responsive {
@@ -47,7 +48,7 @@
 </head>
 
 <body>
-    <div class="container mt-5">
+    <div class="container col-md-10 mt-5">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <h4 class="card-title">Detail Peminjaman - {{ $borrow->borrow_id }}</h4>
@@ -71,6 +72,8 @@
                             <tr>
                                 <th class="text-center">No</th>
                                 <th class="text-center">Nama Barang</th>
+                                <th class="text-center">Gambar</th>
+                                <th class="text-center">Kondisi</th>
                                 <th class="text-center">Barcode</th>
                                 <th class="text-center">Status</th>
                                 <th class="text-center">Tanggal Kembali</th>
@@ -84,10 +87,13 @@
                                         <tr>
                                             <td class="text-center">{{ $index + 1 }}</td>
                                             <td class="text-center">{{ $borrowItem->barang->nama_barang }}</td>
+                                            <td class="text-center">
+                                                <img src="{{ asset('images/' . $borrowItem->barang->gambar) }}" alt="Gambar Barang" width="50">
+                                            </td>
+                                            <td class="text-center">{{ $borrowItem->barang->kondisi }}</td>
                                             <td class="text-center">{{ $borrowItem->barcode }}</td>
                                             <td class="text-center">
-                                                <span
-                                                    class="badge badge-{{ $borrowItem->status == 'Sedang Dipinjam' ? 'danger' : 'success' }}">
+                                                <span class="badge badge-{{ $borrowItem->status == 'Sedang Dipinjam' ? 'danger' : 'success' }}">
                                                     {{ $borrowItem->status }}
                                                 </span>
                                             </td>
@@ -96,9 +102,8 @@
                                             </td>
                                             <td class="text-center">
                                                 @if ($borrowItem->status == 'Sedang Dipinjam')
-                                                    <button type="button" class="btn btn-success btn-sm"
-                                                        onclick="returnItem({{ $borrowItem->id }})">
-                                                        Kembalikan Barang
+                                                    <button type="button" class="btn btn-success btn-sm" onclick="returnItem({{ $borrowItem->id }})">
+                                                        Kembalikan
                                                     </button>
                                                 @else
                                                     <span class="text-success">Sudah Dikembalikan</span>
@@ -108,12 +113,12 @@
                                     @endforeach
                                 @else
                                     <tr>
-                                        <td colspan="6" class="text-center">Tidak ada barang yang dipinjam.</td>
+                                        <td colspan="8" class="text-center">Tidak ada barang yang dipinjam.</td>
                                     </tr>
                                 @endif
                             @else
                                 <tr>
-                                    <td colspan="6" class="text-center">Peminjaman tidak ditemukan.</td>
+                                    <td colspan="8" class="text-center">Peminjaman tidak ditemukan.</td>
                                 </tr>
                             @endif
                         </tbody>
