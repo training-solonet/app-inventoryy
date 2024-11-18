@@ -8,6 +8,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\DataBarangController;
+use App\Http\Controllers\DetailController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 
@@ -47,6 +49,8 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/borrow/remove-from-cart', [BorrowController::class, 'removeFromCart'])->name('remove.from.cart');
     Route::get('/borrow', [BorrowController::class, 'showBorrowForm'])->name('show.borrow.form');
     Route::get('/borrow/{borrowId}/detail', [RecapController::class, 'showBorrowDetails'])->name('borrow.details');
+    // In web.php
+    Route::patch('/borrow/{id}/return', [BorrowController::class, 'returnItem'])->name('borrow.return');
 });
 
 // Route Resource

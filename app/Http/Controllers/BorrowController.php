@@ -34,16 +34,15 @@ class BorrowController extends Controller
         // Cek apakah ada barang yang masih dipinjam
         foreach ($cartData as $item) {
             // Cek apakah barang dengan barcode yang dipilih masih dalam status "Sedang Dipinjam"
-            $barang = Barang::where('kode_barcode', $item['barcode'])->first();
-            if ($barang) {
-                // Cek jika barang tersebut masih dipinjam
-                $isBorrowed = BorrowItem::where('barcode', $item['barcode'])
-                    ->where('status', 'Sedang Dipinjam')
-                    ->exists();
+            $isBorrowed = BorrowItem::where('barcode', $item['barcode'])
+                ->where('status', 'Sedang Dipinjam')
+                ->exists();
 
-                if ($isBorrowed) {
-                    return response()->json(['success' => false, 'message' => 'Barang dengan barcode ' . $item['barcode'] . ' masih dipinjam dan tidak bisa dipinjam kembali.']);
-                }
+            if ($isBorrowed) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Barang dengan barcode ' . $item['barcode'] . ' masih dipinjam dan tidak bisa dipinjam kembali.'
+                ]);
             }
         }
 
@@ -55,14 +54,19 @@ class BorrowController extends Controller
             'status' => 'Sedang Dipinjam'
         ]);
 
-        // Loop melalui setiap item di keranjang dan simpan informasi peminjaman
+        // Simpan setiap item di keranjang ke tabel `borrow_item` melalui model `BorrowItem`
         foreach ($cartData as $item) {
-            // Pastikan Anda memiliki relasi yang sesuai
-            $borrow->items()->attach($item['barcode']); // Pastikan barcode ada di cartData
+            BorrowItem::create([
+                'borrow_id' => $borrow->id,
+                'barcode' => $item['barcode'],
+                'status' => 'Sedang Dipinjam'
+            ]);
         }
 
         return response()->json(['success' => true, 'message' => 'Peminjaman berhasil diproses!']);
     }
+
+
 
 
     /**
@@ -125,5 +129,19 @@ class BorrowController extends Controller
             'borrow' => $borrow,
             'items' => $borrow->items
         ]);
+    }
+
+
+    // In BorrowController.php
+    public function returnItem(Request $request, $id)
+    {
+        $borrowItem = BorrowItem::findOrFail($id);
+
+        // Update status and return date
+        $borrowItem->status = 'Dikembalikan';
+        $borrowItem->return_date = now();
+        $borrowItem->save();
+
+        return redirect()->back()->with('success', 'Barang berhasil dikembalikan.');
     }
 }
