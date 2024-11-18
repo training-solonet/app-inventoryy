@@ -5,12 +5,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>App Monitoring</title>
-    
+
     <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Noto+Sans:300,400,500,600,700,800|PT+Mono:300,400,500,600,700" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/349ee9c857.js" crossorigin="anonymous"></script>
-    
+
     <!-- CSS Files -->
     <link rel="stylesheet" href="../assets/css/corporate-ui-dashboard.css?v=1.0.0">
 </head>
@@ -25,9 +25,9 @@
                     </div>
                     <div class="card shadow-lg border-0">
                         <div class="card-body p-4">
-                            <h3 class="text-center text-dark mb-3">Monitoring App</h3>
+                            <h3 class="text-center text-dark mb-3">Inventory App</h3>
                             <p class="text-center text-muted">Silahkan Masukkan Data Login</p>
-                            
+
                             @if (session('status'))
                                 <div class="alert alert-success text-center" role="alert">
                                     {{ session('status') }}
@@ -38,7 +38,7 @@
                                     {{ $message }}
                                 </div>
                             @enderror
-                            
+
                             <form method="POST" action="{{ route('login') }}">
                                 @csrf
                                 <div class="mb-3">

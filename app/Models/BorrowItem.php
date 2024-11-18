@@ -22,13 +22,11 @@ class BorrowItem extends Model
     // Relasi dengan model Borrow
     public function borrow()
     {
-        return $this->belongsTo(Borrow::class, 'borrow_id');
+        return $this->belongsTo(Borrow::class, 'borrow_id', 'borrow_id');
     }
 
-    // Relasi dengan model Barang
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'barcode', 'kode_barcode');
     }
 }
-

@@ -42,7 +42,7 @@
         <div class="sidebar" data-color="white" data-active-color="danger">
 
 
-            @include('sidebar')
+        @include('sidebarOPR')
 
         </div>
         <div class="main-panel">
@@ -117,108 +117,6 @@
                     </div>
                 </div>
             </div>
-
-            <!-- Modal Tambah Barang -->
-            <div class="modal fade" id="addBarangModal" tabindex="-1" role="dialog" aria-labelledby="addBarangModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header bg-primary">
-                            <h5 class="modal-title" id="addBarangModalLabel">Tambah Barang</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form id="addBarangForm" action="{{ route('barang.store') }}" method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
-                            @csrf
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="kode_barcode">Kode Barcode</label>
-                                    <input type="text" class="form-control" id="kode_barcode" name="kode_barcode" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nama_barang">Nama Barang</label>
-                                    <input type="text" class="form-control" id="nama_barang" name="nama_barang" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="kondisi">Kondisi</label>
-                                    <input type="text" class="form-control" id="kondisi" name="kondisi" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="jenis">Jenis</label>
-                                    <select class="form-control" id="jenis" name="jenis" required>
-                                        <option value="">Pilih Jenis</option>
-                                        <option value="properti">Properti</option>
-                                        <option value="perkakas">Perkakas</option>
-                                    </select>
-                                </div>
-                                <div class="form-group-file">
-                                    <label for="gambar">Gambar</label>
-                                    <input type="file" class="form-control-file" id="gambar" name="gambar" accept="image/*" required>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-primary">Tambah</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-
-
-
-            <!-- Modal Edit Barang -->
-            @foreach ($barangs as $barang)
-            <div class="modal fade" id="editBarangModal{{ $barang->id }}" tabindex="-1" role="dialog" aria-labelledby="editBarangModalLabel" aria-hidden="true">
-                <div class="modal-dialog" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header bg-warning">
-                            <h5 class="modal-title" id="editBarangModalLabel">Edit Barang</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                        </div>
-                        <form action="{{ route('barang.update', $barang->id) }}" method="POST" enctype="multipart/form-data" onsubmit="showLoading()">
-                            @csrf
-                            @method('PUT')
-                            <div class="modal-body">
-                                <div class="form-group">
-                                    <label for="kode_barcode">Kode Barcode</label>
-                                    <input type="text" class="form-control" id="kode_barcode" name="kode_barcode" value="{{ $barang->kode_barcode }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="nama_barang">Nama Barang</label>
-                                    <input type="text" class="form-control" id="nama_barang" name="nama_barang" value="{{ $barang->nama_barang }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="kondisi">Kondisi</label>
-                                    <input type="text" class="form-control" id="kondisi" name="kondisi" value="{{ $barang->kondisi }}" required>
-                                </div>
-                                <div class="form-group">
-                                    <label for="jenis">Jenis</label>
-                                    <select class="form-control" id="jenis" name="jenis" required>
-                                        <option value="properti" {{ $barang->jenis == 'properti' ? 'selected' : '' }}>Properti</option>
-                                        <option value="perkakas" {{ $barang->jenis == 'perkakas' ? 'selected' : '' }}>Perkakas</option>
-                                    </select>
-                                </div>
-                                <div class="form-group-file">
-                                    <label for="gambar">Gambar</label><br>
-                                    @if ($barang->gambar)
-                                        <img src="{{ asset('images/' . $barang->gambar) }}" alt="{{ $barang->nama_barang }}" style="width: 100px; height: auto;"><br>
-                                    @endif
-                                    <input type="file" class="form-control-file mt-2" id="gambar" name="gambar" accept="image/*">
-                                    <small>*Unggah jika ingin mengganti gambar</small>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Batal</button>
-                                <button type="submit" class="btn btn-warning">Update</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-            @endforeach
 
 
 

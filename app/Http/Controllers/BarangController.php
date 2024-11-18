@@ -9,8 +9,8 @@ class BarangController extends Controller
 {
     public function index()
     {
-        $barangs = Barang::orderBy('created_at', 'desc')->paginate(3); // Menggunakan paginate dengan 10 barang per halaman
-        $totalBarangs = Barang::count(); // Menghitung total data barang
+        $barangs = Barang::orderBy('created_at', 'desc')->paginate(10);
+        $totalBarangs = Barang::count();
 
         return view('tb_barang', [
             "active" => 'barang',
