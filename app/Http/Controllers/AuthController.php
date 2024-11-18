@@ -9,29 +9,32 @@ class AuthController extends Controller
 {
     public function showLoginForm()
     {
+        if (Auth::check()) {
+            return redirect('/home'); // Arahkan ke halaman utama atau dashboard jika sudah login
+        }
         return view('auth.login'); 
     }
+
     public function login(Request $request)
-{
-    $credentials = $request->only('email', 'password');
-    
-    $user = \App\Models\User::where('email', $credentials['email'])->first();
-    
-    if ($user && $user->password === $credentials['password']) { 
-        Auth::login($user);
+    {
+        $credentials = $request->only('email', 'password');
         
-        if ($user->role == 'admin') {
-            return redirect('/dashboard');
-        } elseif ($user->role == 'operator') {
-            return redirect('/scan');
+        $user = \App\Models\User::where('email', $credentials['email'])->first();
+        
+        if ($user && $user->password === $credentials['password']) { 
+            Auth::login($user);
+            
+            if ($user->role == 'admin') {
+                return redirect('/dashboard');
+            } elseif ($user->role == 'operator') {
+                return redirect('/scan');
+            }
         }
+
+        return back()->withErrors([
+            'email' => 'Email atau password salah.',
+        ]);
     }
-
-    return back()->withErrors([
-        'email' => 'Email atau password salah.',
-    ]);
-}
-
 
     public function logout()
     {
@@ -39,4 +42,3 @@ class AuthController extends Controller
         return redirect('/login');
     }
 }
-
