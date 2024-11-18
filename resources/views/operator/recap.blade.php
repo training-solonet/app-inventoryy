@@ -72,10 +72,10 @@
                                                         <td class="text-center">{{ $borrows->firstItem() + $index }}</td>
                                                         <td class="text-center">{{ $borrow->borrow_id }}</td>
                                                         <td class="text-center">{{ $borrow->borrower_name }}</td>
-                                                        <td class="text-center">{{ \Carbon\Carbon::parse($borrow->borrow_date)->format('d-m-Y') }}</td> <!-- Tanggal Peminjaman -->
+                                                        <td class="text-center">{{ \Carbon\Carbon::parse($borrow->borrow_date)->format('d-m-Y, H:i:s') }}</td>
                                                         <td class="text-center">
-                                                            <span class="badge badge-{{ $borrow->status == 'Sedang Dipinjam' ? 'danger' : 'success' }}">
-                                                                {{ $borrow->status }}
+                                                            <span class="badge badge-{{ $borrow->borrowItems->where('status', 'Sedang Dipinjam')->isNotEmpty() ? 'danger' : 'success' }}">
+                                                                {{ $borrow->borrowItems->where('status', 'Sedang Dipinjam')->isNotEmpty() ? 'Sedang Dipinjam' : 'Dikembalikan' }}
                                                             </span>
                                                         </td>
                                                         <td class="text-center">

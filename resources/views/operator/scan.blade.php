@@ -46,8 +46,7 @@
                                         </div>
                                         <div class="col-md-4">
                                             <label for="borrow_date" class="form-label">Tanggal Peminjaman:</label>
-                                            <input type="datetime-local" id="borrow_date" name="borrow_date"
-                                                class="form-control" required>
+                                            <input type="datetime-local" id="borrow_date" name="borrow_date" class="form-control" required>
                                         </div>
                                     </div>
                                     <input type="hidden" id="cartData" name="cartData">
@@ -178,6 +177,7 @@
                 .catch(error => Swal.fire('Error', 'Terjadi kesalahan saat menghubungi server.', 'error'));
         }
     </script>
+    
 </body>
 
 </html>

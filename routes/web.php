@@ -31,12 +31,17 @@ Route::get('/', [DashboardController::class, 'index'])->middleware('auth');
 
 // Rute dalam Grup Middleware Auth
 Route::middleware(['auth'])->group(function () {
+    // Rute untuk role operator dan admin
     Route::get('/scan', [BorrowController::class, 'showBorrowForm'])->name('scan')
         ->middleware(RoleMiddleware::class . ':operator');
     Route::get('/recap', [RecapController::class, 'index'])->name('recap')
         ->middleware(RoleMiddleware::class . ':operator,admin');
     Route::get('/items', [BorrowController::class, 'showItems'])->name('items.show')
         ->middleware(RoleMiddleware::class . ':operator,admin');
+    Route::get('/borrow/{borrowId}/detail', [RecapController::class, 'showBorrowDetails'])->name('borrow.details')
+        ->middleware(RoleMiddleware::class . ':operator,admin');
+
+    // Rute khusus operator
     Route::post('/process-borrow', [BorrowController::class, 'processBorrow'])->name('process.borrow')
         ->middleware(RoleMiddleware::class . ':operator');
     Route::post('/return/{id}', [BorrowController::class, 'updateReturnDate'])->name('update.return')
@@ -51,8 +56,8 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(RoleMiddleware::class . ':operator');
     Route::post('/scan-barcode', [BorrowController::class, 'scanBarcode'])->name('scanBarcode')
         ->middleware(RoleMiddleware::class . ':operator');
-    Route::get('/borrow/{borrowId}/detail', [RecapController::class, 'showBorrowDetails'])->name('borrow.details')
-        ->middleware(RoleMiddleware::class . ':operator,admin');
+    Route::patch('/borrow/{id}/return', [BorrowController::class, 'returnItem'])->name('borrow.return')
+        ->middleware(RoleMiddleware::class . ':operator');
 });
 
 // Route Resource dengan Pembatasan Role

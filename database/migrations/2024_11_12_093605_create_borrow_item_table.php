@@ -15,6 +15,7 @@ class CreateBorrowItemTable extends Migration
             // Menambahkan foreign key untuk barcode
             $table->foreign('barcode')->references('kode_barcode')->on('barangs')->onDelete('cascade');
             $table->string('status')->default('Sedang Dipinjam'); // Status barang
+            $table->dateTime('return_date')->nullable();
             $table->timestamps();
         });
     }
@@ -22,6 +23,8 @@ class CreateBorrowItemTable extends Migration
 
     public function down()
     {
-        Schema::dropIfExists('borrow_item');
+        Schema::table('borrow_item', function (Blueprint $table) {
+            $table->dropColumn(['status', 'return_date']);
+        });
     }
 }

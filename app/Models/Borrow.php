@@ -16,9 +16,10 @@ class Borrow extends Model
         'borrower_name',
         'return_date',
     ];
-    
+
+    // Borrow.php
     public function borrowItems()
     {
-        return $this->hasMany(BorrowItem::class, 'borrow_id');
+        return $this->hasMany(BorrowItem::class, 'borrow_id', 'id');
     }
 }

@@ -54,14 +54,17 @@ class RecapController extends Controller
     // Menampilkan detail peminjaman berdasarkan borrow_id
     public function showBorrowDetails($borrowId)
     {
+        // Gunakan eager loading untuk memuat relasi 'borrowItems' dan 'barang'
         $borrow = Borrow::with('borrowItems.barang')->where('borrow_id', $borrowId)->first();
 
-        if ($borrow && $borrow->borrowItems->isEmpty()) {
-            dd('Tidak ada barang yang dipinjam.');
+        // Jika peminjaman tidak ditemukan, tampilkan 404 atau redirect dengan pesan error
+        if (!$borrow) {
+            return redirect()->route('recap')->with('error', 'Peminjaman tidak ditemukan');
         }
 
         return view('operator.detail', compact('borrow'));
     }
+
 
 
 
