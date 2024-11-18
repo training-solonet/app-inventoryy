@@ -4,16 +4,16 @@ use App\Http\Controllers\BarangController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\PetugasController;
-use App\Http\Controllers\UserController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Middleware\RoleMiddleware; 
 
 // Rute Login
-Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
+Route::post('/login', [AuthController::class, 'login'])->middleware('guest');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Rute Pengalihan Berdasarkan Role Pengguna
@@ -31,26 +31,36 @@ Route::get('/', [DashboardController::class, 'index'])->middleware('auth');
 
 // Rute dalam Grup Middleware Auth
 Route::middleware(['auth'])->group(function () {
-    Route::get('/scan', [BorrowController::class, 'showBorrowForm'])->name('scan');
-    Route::get('/recap', [RecapController::class, 'index'])->name('recap');
-    Route::get('/items', [BorrowController::class, 'showItems'])->name('items.show');
-    Route::post('/process-borrow', [BorrowController::class, 'processBorrow'])->name('process.borrow');
-    Route::post('/return/{id}', [BorrowController::class, 'updateReturnDate'])->name('update.return');
-    Route::post('/borrow/{id}/complete', [BorrowController::class, 'completeBorrow'])->name('complete.borrow');
-    Route::post('/add-to-cart', [BorrowController::class, 'addToCart'])->name('add.to.cart');
-    Route::get('/get-cart', [BorrowController::class, 'getCart'])->name('get.cart');
-    Route::post('/remove-from-cart', [BorrowController::class, 'removeFromCart'])->name('remove.from.cart');
-    Route::post('/scan-barcode', [BorrowController::class, 'scanBarcode'])->name('scanBarcode');
-    Route::post('/borrow/add-to-cart', [BorrowController::class, 'addToCart'])->name('add.to.cart');
-    Route::post('/borrow/process', [BorrowController::class, 'processBorrow'])->name('process.borrow');
-    Route::get('/get-item-details/{barcode}', [BorrowController::class, 'getItemDetails']);
-    Route::post('/borrow/remove-from-cart', [BorrowController::class, 'removeFromCart'])->name('remove.from.cart');
-    Route::get('/borrow', [BorrowController::class, 'showBorrowForm'])->name('show.borrow.form');
-    Route::get('/borrow/{borrowId}/detail', [RecapController::class, 'showBorrowDetails'])->name('borrow.details');
+    Route::get('/scan', [BorrowController::class, 'showBorrowForm'])->name('scan')
+        ->middleware(RoleMiddleware::class . ':operator');
+    Route::get('/recap', [RecapController::class, 'index'])->name('recap')
+        ->middleware(RoleMiddleware::class . ':operator,admin');
+    Route::get('/items', [BorrowController::class, 'showItems'])->name('items.show')
+        ->middleware(RoleMiddleware::class . ':operator,admin');
+    Route::post('/process-borrow', [BorrowController::class, 'processBorrow'])->name('process.borrow')
+        ->middleware(RoleMiddleware::class . ':operator');
+    Route::post('/return/{id}', [BorrowController::class, 'updateReturnDate'])->name('update.return')
+        ->middleware(RoleMiddleware::class . ':operator');
+    Route::post('/borrow/{id}/complete', [BorrowController::class, 'completeBorrow'])->name('complete.borrow')
+        ->middleware(RoleMiddleware::class . ':operator');
+    Route::post('/add-to-cart', [BorrowController::class, 'addToCart'])->name('add.to.cart')
+        ->middleware(RoleMiddleware::class . ':operator');
+    Route::get('/get-cart', [BorrowController::class, 'getCart'])->name('get.cart')
+        ->middleware(RoleMiddleware::class . ':operator');
+    Route::post('/remove-from-cart', [BorrowController::class, 'removeFromCart'])->name('remove.from.cart')
+        ->middleware(RoleMiddleware::class . ':operator');
+    Route::post('/scan-barcode', [BorrowController::class, 'scanBarcode'])->name('scanBarcode')
+        ->middleware(RoleMiddleware::class . ':operator');
+    Route::get('/borrow/{borrowId}/detail', [RecapController::class, 'showBorrowDetails'])->name('borrow.details')
+        ->middleware(RoleMiddleware::class . ':operator,admin');
 });
 
-// Route Resource
-Route::resource('dashboard', DashboardController::class)->middleware('auth');
-Route::resource('barang', BarangController::class)->middleware('auth');
-Route::resource('petugas', PetugasController::class)->middleware('auth');
-Route::resource('peminjaman', PeminjamanController::class)->middleware('auth');
+// Route Resource dengan Pembatasan Role
+Route::resource('dashboard', DashboardController::class)
+    ->middleware(['auth', RoleMiddleware::class . ':admin']);
+Route::resource('barang', BarangController::class)
+    ->middleware(['auth', RoleMiddleware::class . ':admin']);
+Route::resource('petugas', PetugasController::class)
+    ->middleware(['auth', RoleMiddleware::class . ':admin']);
+Route::resource('peminjaman', PeminjamanController::class)
+    ->middleware(['auth', RoleMiddleware::class . ':operator,admin']);
