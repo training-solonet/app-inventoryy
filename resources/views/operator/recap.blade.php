@@ -4,7 +4,8 @@
 <head>
     <meta charset="utf-8" />
     <title>Rekap Peminjaman</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no" />
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700,200" rel="stylesheet" />
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
@@ -35,25 +36,47 @@
                                     <div class="row">
                                         <!-- Filter Tanggal Mulai -->
                                         <div class="col-md-3 mt-3">
-                                            <input type="date" name="start_date" class="form-control" value="{{ request()->input('start_date') }}" placeholder="Tanggal Mulai">
+                                            <input type="date" name="start_date" class="form-control"
+                                                value="{{ request()->input('start_date') }}"
+                                                placeholder="Tanggal Mulai">
                                         </div>
 
                                         <!-- Filter Tanggal Akhir -->
                                         <div class="col-md-3 mt-3">
-                                            <input type="date" name="end_date" class="form-control" value="{{ request()->input('end_date') }}" placeholder="Tanggal Akhir">
+                                            <input type="date" name="end_date" class="form-control"
+                                                value="{{ request()->input('end_date') }}" placeholder="Tanggal Akhir">
                                         </div>
 
                                         <!-- Filter Pencarian -->
-                                        <div class="col-md-4 mt-3">
-                                            <input type="text" name="search" class="form-control" value="{{ request()->input('search') }}" placeholder="Cari berdasarkan Nama Peminjam atau ID Peminjaman">
+                                        <div class="col-md-2 mt-3">
+                                            <input type="text" name="search" class="form-control"
+                                                value="{{ request()->input('search') }}"
+                                                placeholder="Cari berdasarkan Nama Peminjam atau ID Peminjaman">
+                                        </div>
+
+                                        <!-- Filter Status -->
+                                        <div class="col-md-2 mt-3">
+                                            <select name="status" class="form-control">
+                                                <option value="Sedang Dipinjam"
+                                                    {{ request()->input('status') == 'Sedang Dipinjam' ? 'selected' : '' }}>
+                                                    Sedang Dipinjam</option>
+                                                <option value="Dikembalikan"
+                                                    {{ request()->input('status') == 'Dikembalikan' ? 'selected' : '' }}>
+                                                    Dikembalikan</option>
+                                                <option value="Semua"
+                                                    {{ request()->input('status') == 'Semua' ? 'selected' : '' }}>Semua
+                                                </option>
+                                            </select>
                                         </div>
 
                                         <!-- Tombol Filter -->
                                         <div class="col-md-2">
-                                            <button type="submit" class="btn btn-outline-primary text-primary">Filter</button>
+                                            <button type="submit"
+                                                class="btn btn-outline-primary text-primary">Filter</button>
                                         </div>
                                     </div>
                                 </form>
+
 
                                 <div class="table-responsive">
                                     <table class="table">
@@ -61,31 +84,38 @@
                                             <th class="text-center">No</th>
                                             <th class="text-center">No Peminjaman</th>
                                             <th class="text-center">Nama Peminjam</th>
-                                            <th class="text-center">Tanggal Peminjaman</th> <!-- Kolom untuk tanggal peminjaman -->
+                                            <th class="text-center">Tanggal Peminjaman</th>
+                                            <!-- Kolom untuk tanggal peminjaman -->
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Aksi</th>
                                         </thead>
                                         <tbody>
-                                            @if($borrows->isNotEmpty())
-                                                @foreach($borrows as $index => $borrow)
+                                            @if ($borrows->isNotEmpty())
+                                                @foreach ($borrows as $index => $borrow)
                                                     <tr>
-                                                        <td class="text-center">{{ $borrows->firstItem() + $index }}</td>
+                                                        <td class="text-center">{{ $borrows->firstItem() + $index }}
+                                                        </td>
                                                         <td class="text-center">{{ $borrow->borrow_id }}</td>
                                                         <td class="text-center">{{ $borrow->borrower_name }}</td>
-                                                        <td class="text-center">{{ \Carbon\Carbon::parse($borrow->borrow_date)->format('d-m-Y, H:i:s') }}</td>
                                                         <td class="text-center">
-                                                            <span class="badge badge-{{ $borrow->borrowItems->where('status', 'Sedang Dipinjam')->isNotEmpty() ? 'danger' : 'success' }}">
+                                                            {{ \Carbon\Carbon::parse($borrow->borrow_date)->format('d-m-Y, H:i:s') }}
+                                                        </td>
+                                                        <td class="text-center">
+                                                            <span
+                                                                class="badge badge-{{ $borrow->borrowItems->where('status', 'Sedang Dipinjam')->isNotEmpty() ? 'danger' : 'success' }}">
                                                                 {{ $borrow->borrowItems->where('status', 'Sedang Dipinjam')->isNotEmpty() ? 'Sedang Dipinjam' : 'Dikembalikan' }}
                                                             </span>
                                                         </td>
                                                         <td class="text-center">
-                                                            <a href="{{ route('borrow.details', ['borrowId' => $borrow->borrow_id]) }}" class="btn btn-info">Lihat Detail</a>
+                                                            <a href="{{ route('borrow.details', ['borrowId' => $borrow->borrow_id]) }}"
+                                                                class="btn btn-info">Lihat Detail</a>
                                                         </td>
                                                     </tr>
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="6" class="text-center">Tidak ada data peminjaman.</td>
+                                                    <td colspan="6" class="text-center">Tidak ada data peminjaman.
+                                                    </td>
                                                 </tr>
                                             @endif
                                         </tbody>
