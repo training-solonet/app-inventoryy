@@ -12,13 +12,15 @@ class CreateBorrowItemTable extends Migration
             $table->id();
             $table->foreignId('borrow_id')->constrained()->onDelete('cascade');
             $table->string('barcode');
-            // Menambahkan foreign key untuk barcode
             $table->foreign('barcode')->references('kode_barcode')->on('barangs')->onDelete('cascade');
-            $table->string('status')->default('Sedang Dipinjam'); // Status barang
+            $table->string('status')->default('Sedang Dipinjam');
+            $table->string('gambar')->nullable();  
+            $table->string('kondisi')->nullable();
             $table->dateTime('return_date')->nullable();
             $table->timestamps();
         });
     }
+
 
 
     public function down()

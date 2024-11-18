@@ -51,7 +51,11 @@ class RecapController extends Controller
         // Urutkan data terbaru di paling atas
         $borrows = $query->orderBy('borrow_date', 'desc')->paginate(5);
 
-        return view('operator.recap', compact('borrows'));
+        $unreturnedItemsCount = $query->whereHas('borrowItems', function ($q) {
+            $q->where('status', 'Sedang Dipinjam');
+        })->count();
+
+        return view('operator.recap', compact('borrows', 'unreturnedItemsCount'));
     }
 
 

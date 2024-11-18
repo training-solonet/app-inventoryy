@@ -26,6 +26,16 @@
             <div class="content">
                 <div class="row">
                     <div class="col-md-12">
+                        @if ($unreturnedItemsCount > 0)
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                                <strong>Pengingat!</strong> Ada <strong>{{ $unreturnedItemsCount }}</strong> barang
+                                yang belum dikembalikan.
+                                Pastikan untuk segera mengembalikan barang tersebut.
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                        @endif
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4 class="card-title">Rekap Peminjaman</h4>
@@ -35,27 +45,27 @@
                                 <form method="GET" action="{{ route('recap') }}" class="mb-4">
                                     <div class="row">
                                         <!-- Filter Tanggal Mulai -->
-                                        <div class="col-md-3 mt-3">
+                                        <div class="col-md-2 mt-3">
                                             <input type="date" name="start_date" class="form-control"
                                                 value="{{ request()->input('start_date') }}"
                                                 placeholder="Tanggal Mulai">
                                         </div>
 
                                         <!-- Filter Tanggal Akhir -->
-                                        <div class="col-md-3 mt-3">
+                                        <div class="col-md-2 mt-3">
                                             <input type="date" name="end_date" class="form-control"
                                                 value="{{ request()->input('end_date') }}" placeholder="Tanggal Akhir">
                                         </div>
 
                                         <!-- Filter Pencarian -->
-                                        <div class="col-md-2 mt-3">
+                                        <div class="col-md-3 mt-3">
                                             <input type="text" name="search" class="form-control"
                                                 value="{{ request()->input('search') }}"
                                                 placeholder="Cari berdasarkan Nama Peminjam atau ID Peminjaman">
                                         </div>
 
                                         <!-- Filter Status -->
-                                        <div class="col-md-2 mt-3">
+                                        <div class="col-md-3 mt-3">
                                             <select name="status" class="form-control">
                                                 <option value="Sedang Dipinjam"
                                                     {{ request()->input('status') == 'Sedang Dipinjam' ? 'selected' : '' }}>
@@ -85,7 +95,6 @@
                                             <th class="text-center">No Peminjaman</th>
                                             <th class="text-center">Nama Peminjam</th>
                                             <th class="text-center">Tanggal Peminjaman</th>
-                                            <!-- Kolom untuk tanggal peminjaman -->
                                             <th class="text-center">Status</th>
                                             <th class="text-center">Aksi</th>
                                         </thead>
@@ -144,6 +153,7 @@
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/perfect-scrollbar.jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/paper-dashboard.min.js?v=2.0.1') }}" type="text/javascript"></script>
+
 </body>
 
 </html>

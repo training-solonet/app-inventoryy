@@ -111,8 +111,11 @@ class BorrowController extends Controller
         return response()->json([
             'name' => $barang->nama_barang,
             'barcode' => $barang->kode_barcode,
+            'image' => asset('images/' . $barang->gambar),  // Return image path
+            'condition' => $barang->kondisi  // Return condition
         ]);
     }
+
 
     public function detail($borrow_id)
     {

@@ -17,6 +17,8 @@ class BorrowItem extends Model
         'borrow_id',
         'barcode',
         'status',
+        'gambar',
+        'kondisi',
     ];
 
     // Relasi dengan model Borrow
