@@ -69,3 +69,5 @@ Route::resource('petugas', PetugasController::class)
     ->middleware(['auth', RoleMiddleware::class . ':admin']);
 Route::resource('peminjaman', PeminjamanController::class)
     ->middleware(['auth', RoleMiddleware::class . ':operator,admin']);
+
+    Route::get('/detailadmin/{borrowId}', [PeminjamanController::class, 'showBorrowDetails'])->name('detailadmin');
