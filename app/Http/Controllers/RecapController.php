@@ -31,11 +31,8 @@ class RecapController extends Controller
             });
         }
 
-        $status = $request->input('status', 'Sedang Dipinjam'); // Default to "Sedang Dipinjam"
-        $query = Borrow::query();
-
-        // Filter by status
-        $status = $request->input('status', 'Sedang Dipinjam');
+        // Filter berdasarkan status
+        $status = $request->input('status', 'Semua'); // Default to "Sedang Dipinjam"
         if ($status !== 'Semua') {
             if ($status == 'Sedang Dipinjam') {
                 $query->whereHas('borrowItems', function ($q) {
@@ -51,12 +48,14 @@ class RecapController extends Controller
         // Urutkan data terbaru di paling atas
         $borrows = $query->orderBy('borrow_date', 'desc')->paginate(5);
 
+        // Menghitung jumlah barang yang belum dikembalikan
         $unreturnedItemsCount = $query->whereHas('borrowItems', function ($q) {
             $q->where('status', 'Sedang Dipinjam');
         })->count();
 
         return view('operator.recap', compact('borrows', 'unreturnedItemsCount'));
     }
+
 
 
 

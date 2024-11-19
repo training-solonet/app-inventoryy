@@ -37,12 +37,14 @@
 
         .table th {
             text-align: center;
-            font-weight: 600; /* Lebih tebal untuk header */
+            font-weight: 600;
+            /* Lebih tebal untuk header */
         }
 
         .table td {
             text-align: center;
-            font-weight: 400; /* Regular untuk konten */
+            font-weight: 400;
+            /* Regular untuk konten */
         }
     </style>
 </head>
@@ -88,12 +90,18 @@
                                             <td class="text-center">{{ $index + 1 }}</td>
                                             <td class="text-center">{{ $borrowItem->barang->nama_barang }}</td>
                                             <td class="text-center">
-                                                <img src="{{ asset('images/' . $borrowItem->barang->gambar) }}" alt="Gambar Barang" width="50">
+                                                <img src="{{ asset('images/' . $borrowItem->barang->gambar) }}"
+                                                    alt="Gambar Barang" width="50">
                                             </td>
-                                            <td class="text-center">{{ $borrowItem->barang->kondisi }}</td>
+                                            <td class="text-center">
+                                                <span class="{{ $borrowItem->kondisi == 'Rusak' ? 'text-danger' : '' }}">
+                                                    {{ $borrowItem->kondisi }}
+                                                </span>
+                                            </td>
                                             <td class="text-center">{{ $borrowItem->barcode }}</td>
                                             <td class="text-center">
-                                                <span class="badge badge-{{ $borrowItem->status == 'Sedang Dipinjam' ? 'danger' : 'success' }}">
+                                                <span
+                                                    class="badge badge-{{ $borrowItem->status == 'Sedang Dipinjam' ? 'danger' : 'success' }}">
                                                     {{ $borrowItem->status }}
                                                 </span>
                                             </td>
@@ -102,7 +110,8 @@
                                             </td>
                                             <td class="text-center">
                                                 @if ($borrowItem->status == 'Sedang Dipinjam')
-                                                    <button type="button" class="btn btn-success btn-sm" onclick="returnItem({{ $borrowItem->id }})">
+                                                    <button type="button" class="btn btn-success btn-sm"
+                                                        onclick="returnItem({{ $borrowItem->id }})">
                                                         Kembalikan
                                                     </button>
                                                 @else
@@ -137,39 +146,57 @@
     <script>
         function returnItem(itemId) {
             Swal.fire({
-                title: 'Apakah Anda yakin?',
-                text: "Barang akan dikembalikan.",
-                icon: 'warning',
+                title: 'Apakah barang ini dikembalikan dengan kondisi?',
+                input: 'select',
+                inputOptions: {
+                    'Baik': 'Baik',
+                    'Rusak': 'Rusak'
+                },
+                inputPlaceholder: 'Pilih kondisi',
                 showCancelButton: true,
-                confirmButtonColor: '#3085d6',
-                cancelButtonColor: '#d33',
-                confirmButtonText: 'Ya, Kembalikan!',
+                confirmButtonText: 'Lanjut',
                 cancelButtonText: 'Batal'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // Create a hidden form to submit the PATCH request
-                    const form = document.createElement('form');
-                    form.action = `/borrow/${itemId}/return`;
-                    form.method = 'POST';
+                    const condition = result.value;
+                    Swal.fire({
+                        title: 'Apakah Anda yakin?',
+                        text: `Barang akan dikembalikan dengan kondisi ${condition}.`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Ya, Kembalikan!',
+                        cancelButtonText: 'Batal'
+                    }).then((confirmResult) => {
+                        if (confirmResult.isConfirmed) {
+                            const form = document.createElement('form');
+                            form.action = `/borrow/${itemId}/return`;
+                            form.method = 'POST';
 
-                    // CSRF Token
-                    const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
-                    const csrfInput = document.createElement('input');
-                    csrfInput.type = 'hidden';
-                    csrfInput.name = '_token';
-                    csrfInput.value = csrfToken;
-                    form.appendChild(csrfInput);
+                            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+                            const csrfInput = document.createElement('input');
+                            csrfInput.type = 'hidden';
+                            csrfInput.name = '_token';
+                            csrfInput.value = csrfToken;
+                            form.appendChild(csrfInput);
 
-                    // PATCH Method
-                    const methodInput = document.createElement('input');
-                    methodInput.type = 'hidden';
-                    methodInput.name = '_method';
-                    methodInput.value = 'PATCH';
-                    form.appendChild(methodInput);
+                            const methodInput = document.createElement('input');
+                            methodInput.type = 'hidden';
+                            methodInput.name = '_method';
+                            methodInput.value = 'PATCH';
+                            form.appendChild(methodInput);
 
-                    // Append form to body and submit
-                    document.body.appendChild(form);
-                    form.submit();
+                            const conditionInput = document.createElement('input');
+                            conditionInput.type = 'hidden';
+                            conditionInput.name = 'condition';
+                            conditionInput.value = condition;
+                            form.appendChild(conditionInput);
+
+                            document.body.appendChild(form);
+                            form.submit();
+                        }
+                    });
                 }
             });
         }

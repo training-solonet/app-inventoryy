@@ -118,15 +118,22 @@
                             if (data.error) {
                                 Swal.fire('Error', 'Barang tidak ditemukan.', 'error');
                             } else {
-                                cartData.push({
-                                    barcode: data.barcode,
-                                    name: data.name,
-                                    image: data.image, // Adding image field
-                                    condition: data.condition // Adding condition field
-                                });
-                                updateCartTable();
-                                document.getElementById('barcode').value = '';
-                                Swal.fire('Success', 'Barang ditambahkan ke keranjang!', 'success');
+                                // Mengecek kondisi barang sebelum menambahkannya ke keranjang
+                                if (data.condition === 'Rusak') {
+                                    Swal.fire('Error',
+                                        'Barang dengan kondisi Rusak tidak dapat ditambahkan ke keranjang.', 'error'
+                                        );
+                                } else {
+                                    cartData.push({
+                                        barcode: data.barcode,
+                                        name: data.name,
+                                        image: data.image,
+                                        condition: data.condition
+                                    });
+                                    updateCartTable();
+                                    document.getElementById('barcode').value = '';
+                                    Swal.fire('Success', 'Barang ditambahkan ke keranjang!', 'success');
+                                }
                             }
                         })
                         .catch(error => Swal.fire('Error', 'Terjadi kesalahan saat mencari barang.', 'error'));
@@ -137,6 +144,7 @@
                 Swal.fire('Perhatian', 'Masukkan barcode terlebih dahulu.', 'warning');
             }
         }
+
 
 
         function updateCartTable() {

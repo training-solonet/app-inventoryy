@@ -67,15 +67,15 @@
                                         <!-- Filter Status -->
                                         <div class="col-md-3 mt-3">
                                             <select name="status" class="form-control">
+                                                <option value="Semua"
+                                                    {{ request()->input('status') == 'Semua' ? 'selected' : '' }}>Semua
+                                                </option>
                                                 <option value="Sedang Dipinjam"
                                                     {{ request()->input('status') == 'Sedang Dipinjam' ? 'selected' : '' }}>
                                                     Sedang Dipinjam</option>
                                                 <option value="Dikembalikan"
                                                     {{ request()->input('status') == 'Dikembalikan' ? 'selected' : '' }}>
                                                     Dikembalikan</option>
-                                                <option value="Semua"
-                                                    {{ request()->input('status') == 'Semua' ? 'selected' : '' }}>Semua
-                                                </option>
                                             </select>
                                         </div>
 
