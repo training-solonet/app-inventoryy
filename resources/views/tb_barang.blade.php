@@ -92,7 +92,11 @@
                                                         Tidak Ada Gambar
                                                     @endif
                                                 </td>
-                                                <td class="text-center">{{ $barang->kondisi }}</td>
+                                                <td class="text-center">
+                                                    <span class="{{ $barang->kondisi == 'Rusak' ? 'text-danger' : '' }}">
+                                                        {{ $barang->kondisi }}
+                                                    </span>
+                                                </td>
                                                 <td class="text-center">{{ $barang->jenis }}</td>
                                                 <td class="text-center">
                                                     <a href="#" class="btn btn-info btn-sm" title="Detail" data-toggle="modal" data-target="#detailBarangModal"
@@ -157,7 +161,10 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="kondisi">Kondisi</label>
-                                    <input type="text" class="form-control" id="kondisi" name="kondisi" required>
+                                    <select class="form-control" id="kondisi" name="kondisi" required>
+                                        <option value="Baik">Baik</option>
+                                        <option value="Rusak">Rusak</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="jenis">Jenis</label>
@@ -208,7 +215,10 @@
                                 </div>
                                 <div class="form-group">
                                     <label for="kondisi">Kondisi</label>
-                                    <input type="text" class="form-control" id="kondisi" name="kondisi" value="{{ $barang->kondisi }}" required>
+                                    <select class="form-control" id="kondisi" name="kondisi" required>
+                                        <option value="Baik" {{ $barang->kondisi == 'Baik' ? 'selected' : '' }}>Baik</option>
+                                        <option value="Rusak" {{ $barang->kondisi == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="jenis">Jenis</label>
