@@ -94,10 +94,11 @@
                                                     alt="Gambar Barang" width="50">
                                             </td>
                                             <td class="text-center">
-                                                <span class="{{ $borrowItem->kondisi == 'Rusak' ? 'text-danger' : '' }}">
+                                                <span class="badge {{ $borrowItem->kondisi == 'Rusak' ? 'badge-danger' : 'badge-success' }} px-2 py-1 font-weight-semibold" style="font-size: 0.95em;">
                                                     {{ $borrowItem->kondisi }}
                                                 </span>
                                             </td>
+
                                             <td class="text-center">{{ $borrowItem->barcode }}</td>
                                             <td class="text-center">
                                                 <span

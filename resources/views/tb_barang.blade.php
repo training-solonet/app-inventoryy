@@ -93,7 +93,7 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="{{ $barang->kondisi == 'Rusak' ? 'text-danger' : '' }}">
+                                                    <span class="badge {{ $barang->kondisi == 'Rusak' ? 'badge-danger' : 'badge-success' }} px-2 py-1 font-weight-semibold" style="font-size: 0.95em;">
                                                         {{ $barang->kondisi }}
                                                     </span>
                                                 </td>
