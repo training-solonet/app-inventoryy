@@ -143,23 +143,6 @@ class BorrowController extends Controller
         ]);
     }
 
-    // public function detailadmin($borrow_id)
-    // {
-    //     $borrow = Borrow::with('items')->where('borrow_id', $borrow_id)->first();
-
-    //     if (!$borrow) {
-    //         return redirect()->route('recap')->with('error', 'Data peminjaman tidak ditemukan.');
-    //     }
-
-    //     // Format tanggal peminjaman dengan Carbon
-    //     $borrow->borrow_date = Carbon::parse($borrow->borrow_date)->format('d-m-Y');
-
-    //     return view('detailadmin', [
-    //         'borrow' => $borrow,
-    //         'items' => $borrow->items
-    //     ]);
-    // }
-
 
     // In BorrowController.php
     public function returnItem(Request $request, $id)

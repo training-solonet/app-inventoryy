@@ -9,7 +9,7 @@ use App\Http\Controllers\RecapController;
 use App\Http\Controllers\AuthController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
-use App\Http\Middleware\RoleMiddleware; 
+use App\Http\Middleware\RoleMiddleware;
 
 // Rute Login
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
@@ -40,6 +40,10 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(RoleMiddleware::class . ':operator,admin');
     Route::get('/borrow/{borrowId}/detail', [RecapController::class, 'showBorrowDetails'])->name('borrow.details')
         ->middleware(RoleMiddleware::class . ':operator,admin');
+
+    Route::get('/get-item-details/{barcode}', [BorrowController::class, 'getItemDetails'])
+        ->middleware(RoleMiddleware::class . ':operator,admin');
+
 
     // Rute khusus operator
     Route::post('/process-borrow', [BorrowController::class, 'processBorrow'])->name('process.borrow')
