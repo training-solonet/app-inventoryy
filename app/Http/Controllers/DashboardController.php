@@ -26,11 +26,17 @@ class DashboardController extends Controller
                              ->orWhere('role', 'admin')
                              ->where('created_at', '>=', Carbon::now()->subDays(30))
                              ->count();
+        
+        $totalRusak = Barang::where('kondisi', 'Rusak')->count();
+        $totalBaik = Barang::where('kondisi', 'Baik')->count();
+        $totalBelumDikembalikan = Borrow::where('status', 'Belum Dikembalikan')->count();
 
         // Menghitung jumlah barang yang pengembaliannya tertunda
         $pendingReturns = Borrow::where('status', 'Tertunda')
                                 ->count();
 
-        return view('dashboard', compact('totalBarangs', 'totalPetugas', 'totalBorrowedItems', 'recentPetugas', 'pendingReturns'));
+            
+
+        return view('dashboard', compact('totalBarangs', 'totalPetugas', 'totalBorrowedItems', 'recentPetugas', 'pendingReturns', 'totalRusak', 'totalBaik','totalBelumDikembalikan'));
     }
 }
