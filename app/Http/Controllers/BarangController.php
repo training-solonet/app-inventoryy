@@ -19,6 +19,18 @@ class BarangController extends Controller
         ]);
     }
 
+    public function search(Request $request)
+    {
+        $query = $request->input('query');
+        $barangs = Barang::where('nama_barang', 'like', "%$query%")
+            ->orWhere('kondisi', 'like', "%$query%")
+            ->orWhere('jenis', 'like', "%$query%")
+            ->get();
+
+        return response()->json($barangs);
+    }
+
+
 
     // Menyimpan data ke database
     public function store(Request $request)

@@ -44,6 +44,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/get-item-details/{barcode}', [BorrowController::class, 'getItemDetails'])
         ->middleware(RoleMiddleware::class . ':operator,admin');
 
+    Route::get('/barang/search', [BarangController::class, 'search'])->name('barang.search')
+    ->middleware(RoleMiddleware::class . ':operator,admin');
+
+
 
     // Rute khusus operator
     Route::post('/process-borrow', [BorrowController::class, 'processBorrow'])->name('process.borrow')

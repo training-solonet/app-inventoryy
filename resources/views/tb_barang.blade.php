@@ -393,24 +393,42 @@
     @endif
 
     <script>
-        // JavaScript for Search Filter
         document.getElementById('searchInput').addEventListener('keyup', function() {
-            const searchValue = this.value.toLowerCase();
-            const tableRows = document.querySelectorAll('#barangTable tbody tr');
+            let query = this.value;
 
-            tableRows.forEach(row => {
-                const nama = row.cells[1].textContent.toLowerCase();
-                const kondisi = row.cells[3].textContent.toLowerCase();
-                const jenis = row.cells[4].textContent.toLowerCase();
+            // Lakukan request AJAX
+            fetch(`/barang/search?query=${query}`)
+                .then(response => response.json())
+                .then(data => {
+                    let tableBody = document.querySelector('#barangTable tbody');
+                    tableBody.innerHTML = '';
 
-                if (nama.includes(searchValue) || kondisi.includes(searchValue) || jenis.includes(searchValue)) {
-                    row.style.display = '';
-                } else {
-                    row.style.display = 'none';
-                }
-            });
+                    // Loop melalui hasil pencarian
+                    data.forEach((barang, index) => {
+                        let row = `
+                            <tr>
+                                <td class="text-center">${index + 1}</td>
+                                <td class="text-center">${barang.nama_barang}</td>
+                                <td class="text-center">
+                                    ${barang.gambar ? `<img src="/images/${barang.gambar}" style="width: 100px; height: auto;">` : 'Tidak Ada Gambar'}
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge ${barang.kondisi === 'Rusak' ? 'badge-danger' : 'badge-success'} px-2 py-1 font-weight-semibold" style="font-size: 0.95em;">
+                                        ${barang.kondisi}
+                                    </span>
+                                </td>
+                                <td class="text-center">${barang.jenis}</td>
+                                <td class="text-center">
+                                    <!-- Aksi buttons di sini -->
+                                </td>
+                            </tr>`;
+                        tableBody.insertAdjacentHTML('beforeend', row);
+                    });
+                })
+                .catch(error => console.error('Error:', error));
         });
     </script>
+
 
 
 

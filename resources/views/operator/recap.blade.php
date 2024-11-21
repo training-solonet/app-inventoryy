@@ -27,9 +27,10 @@
                 <div class="row">
                     <div class="col-md-12">
                         @if ($unreturnedItemsCount > 0)
-                            <div class="alert alert-warning alert-dismissible fade show" role="alert">
-                                <strong>Pengingat!</strong> Ada <strong>{{ $unreturnedItemsCount }}</strong> barang
-                                yang belum dikembalikan.
+                            <div class="alert alert-warning alert-dismissible fade show" role="alert"
+                                style="background: linear-gradient(to right, #ffeb3b, #ff9800); color: #ffffff; border: none;">
+                                <strong>Pengingat!</strong> Ada <strong>{{ $unreturnedItemsCount }}</strong> barang yang
+                                belum dikembalikan.
                                 Pastikan untuk segera mengembalikan barang tersebut.
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
