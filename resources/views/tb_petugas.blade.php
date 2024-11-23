@@ -43,7 +43,7 @@
                                                 <th class="text-center">Nama Petugas</th>
                                                 <th class="text-center">Email</th>
                                                 <th class="text-center">Role</th>
-                                                <th class="text-center">Password</th>
+                                                <th class="text-center">Password (Hash)</th>
                                                 <th class="text-center">Aksi</th>
                                             </tr>
                                         </thead>
@@ -54,7 +54,23 @@
                                                 <td class="text-center">{{ $item->name }}</td>
                                                 <td class="text-center">{{ $item->email }}</td>
                                                 <td class="text-center">{{ $item->role }}</td>
-                                                <td class="text-center">{{ $item->password }}</td>
+                                                <td class="text-center">
+                                                    <div class="input-group">
+                                                        <input 
+                                                            type="password" 
+                                                            class="form-control password-input" 
+                                                            value="{{ $item->password }}" 
+                                                            readonly>
+                                                        <div class="input-group-append">
+                                                            <button 
+                                                                type="button" 
+                                                                class="btn btn-outline-secondary toggle-password" 
+                                                                title="Tampilkan/Sembunyikan Password">
+                                                                <i class="fa fa-eye"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </td>
                                                 <td class="text-center">
                                                     <button type="button" class="btn btn-warning btn-sm" data-toggle="modal" data-target="#editPetugasModal{{ $item->id }}" title="Edit">
                                                         <i class="fa fa-edit"></i>
@@ -176,6 +192,29 @@
     <script src="../assets/js/core/bootstrap.min.js"></script>
     <script src="../assets/js/plugins/perfect-scrollbar.jquery.min.js"></script>
     <script src="../assets/js/paper-dashboard.min.js?v=2.0.1" type="text/javascript"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggleButtons = document.querySelectorAll('.toggle-password');
+    
+            toggleButtons.forEach(button => {
+                button.addEventListener('click', function () {
+                    const input = this.closest('.input-group').querySelector('.password-input');
+                    const icon = this.querySelector('i');
+                    
+                    if (input.type === 'password') {
+                        input.type = 'text'; // Ubah menjadi teks
+                        icon.classList.remove('fa-eye');
+                        icon.classList.add('fa-eye-slash');
+                    } else {
+                        input.type = 'password'; // Kembali ke mode tersembunyi
+                        icon.classList.remove('fa-eye-slash');
+                        icon.classList.add('fa-eye');
+                    }
+                });
+            });
+        });
+    </script>
+    
 </body>
 
 </html>
