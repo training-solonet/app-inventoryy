@@ -18,7 +18,7 @@ class Barang extends Model
         'gambar',
     ];
 
-    // Di model BorrowItem
+   
     public function barang()
     {
         return $this->belongsTo(Barang::class, 'barcode', 'kode_barcode');

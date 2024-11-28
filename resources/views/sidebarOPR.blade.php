@@ -27,6 +27,13 @@
                 <p>Data Peminjaman</p>
             </a>
         </li>
+
+        <li class="{{ request()->routeIs('search') ? 'active' : '' }}">
+            <a href="{{ route('search') }}">
+                <i class="nc-icon nc-tile-56"></i>
+                <p>Pencarian Barang</p>
+            </a>
+        </li>
     </ul>
 </div>
 <style>

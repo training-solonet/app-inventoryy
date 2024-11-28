@@ -7,9 +7,11 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\BorrowController;
 use App\Http\Controllers\RecapController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BarangProjectController;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Middleware\RoleMiddleware;
+use App\Http\Controllers\SearchController;
 
 // Rute Login
 Route::get('/login', [AuthController::class, 'showLoginForm'])->name('login')->middleware('guest');
@@ -40,13 +42,12 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(RoleMiddleware::class . ':operator,admin');
     Route::get('/borrow/{borrowId}/detail', [RecapController::class, 'showBorrowDetails'])->name('borrow.details')
         ->middleware(RoleMiddleware::class . ':operator,admin');
-
     Route::get('/get-item-details/{barcode}', [BorrowController::class, 'getItemDetails'])
         ->middleware(RoleMiddleware::class . ':operator,admin');
-
     Route::get('/barang/search', [BarangController::class, 'search'])->name('barang.search')
-    ->middleware(RoleMiddleware::class . ':operator,admin');
-
+        ->middleware(RoleMiddleware::class . ':operator,admin');
+    Route::get('/search', [SearchController::class, 'index'])->name('search')
+        ->middleware(RoleMiddleware::class . ':operator');
 
 
     // Rute khusus operator
@@ -68,14 +69,17 @@ Route::middleware(['auth'])->group(function () {
         ->middleware(RoleMiddleware::class . ':operator');
 });
 
-// Route Resource dengan Pembatasan Role
-Route::resource('dashboard', DashboardController::class)
-    ->middleware(['auth', RoleMiddleware::class . ':admin']);
-Route::resource('barang', BarangController::class)
-    ->middleware(['auth', RoleMiddleware::class . ':admin']);
-Route::resource('petugas', PetugasController::class)
-    ->middleware(['auth', RoleMiddleware::class . ':admin']);
-Route::resource('peminjaman', PeminjamanController::class)
-    ->middleware(['auth', RoleMiddleware::class . ':operator,admin']);
+    // Route Resource dengan Pembatasan Role
+    Route::resource('dashboard', DashboardController::class)
+        ->middleware(['auth', RoleMiddleware::class . ':admin']);
+    Route::resource('barang', BarangController::class)
+        ->middleware(['auth', RoleMiddleware::class . ':admin']);
+    Route::resource('petugas', PetugasController::class)
+        ->middleware(['auth', RoleMiddleware::class . ':admin']);
+    Route::resource('peminjaman', PeminjamanController::class)
+        ->middleware(['auth', RoleMiddleware::class . ':operator,admin']);
+
+    Route::resource('barang-project', BarangProjectController::class)
+        ->middleware(['auth', RoleMiddleware::class . ':admin']);
 
     Route::get('/detailadmin/{borrowId}', [PeminjamanController::class, 'showBorrowDetails'])->name('detailadmin');
