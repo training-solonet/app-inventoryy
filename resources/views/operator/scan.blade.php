@@ -44,11 +44,12 @@
                                             <input type="text" id="borrower_name" name="borrower_name"
                                                 class="form-control" required>
                                         </div>
+                                        <!-- Tanggal Peminjaman (default ke tanggal hari ini) -->
                                         <div class="col-md-4">
                                             <label for="borrow_date" class="form-label">Tanggal Peminjaman:</label>
-                                            <input type="datetime-local" id="borrow_date" name="borrow_date"
-                                                class="form-control" required>
+                                            <input type="datetime-local" id="borrow_date" name="borrow_date" class="form-control" required>
                                         </div>
+
                                     </div>
                                     <input type="hidden" id="cartData" name="cartData">
 
@@ -77,17 +78,13 @@
                                 </form>
 
                                 <!-- Barcode Input and Add-to-Cart Button -->
-                                <div class="row mt-4">
-                                    <div class="col-md-6">
-                                        <label for="barcode" class="form-label">Cari Barang (Scan Barcode):</label>
-                                        <input type="text" id="barcode" class="form-control"
-                                            placeholder="Masukkan barcode">
-                                    </div>
-                                    <div class="col-md-6 d-flex align-items-end mt-2">
-                                        <button type="button" onclick="addToCart()" class="btn btn-primary">Tambah ke
-                                            Keranjang</button>
-                                    </div>
+                                <!-- Barcode Input (tanpa tombol) -->
+                            <div class="row mt-4">
+                                <div class="col-md-6">
+                                    <label for="barcode" class="form-label">Cari Barang (Scan Barcode):</label>
+                                    <input type="text" id="barcode" class="form-control" placeholder="Masukkan barcode">
                                 </div>
+                            </div>
                             </div>
                         </div>
                     </div>
@@ -104,96 +101,100 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        let cartData = [];
+let cartData = [];
+let inputDelay;
 
-        function addToCart() {
-            const barcode = document.getElementById('barcode').value;
+// Menggunakan event 'input' pada elemen barcode
+document.getElementById('barcode').addEventListener('input', function () {
+    const barcodeInput = this;
+    const barcode = barcodeInput.value.trim();
 
-            if (barcode) {
-                const itemExists = cartData.find(item => item.barcode === barcode);
-                if (!itemExists) {
-                    fetch(`/get-item-details/${barcode}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.error) {
-                                Swal.fire('Error', 'Barang tidak ditemukan.', 'error');
+    // Pastikan hanya memproses barcode jika ada input
+    if (inputDelay) clearTimeout(inputDelay);
+
+    inputDelay = setTimeout(() => {
+        if (barcode) {
+            const itemExists = cartData.find(item => item.barcode === barcode);
+            if (!itemExists) {
+                fetch(`/get-item-details/${barcode}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.error) {
+                            Swal.fire('Error', 'Barang tidak ditemukan.', 'error');
+                        } else {
+                            // Cek kondisi barang
+                            if (data.condition === 'Rusak' || data.condition === 'Hilang') {
+                                Swal.fire(
+                                    'Error',
+                                    `Barang dengan kondisi ${data.condition} tidak dapat ditambahkan ke keranjang.`,
+                                    'error'
+                                );
                             } else {
-                                // Mengecek kondisi barang sebelum menambahkannya ke keranjang
-                                if (data.condition === 'Rusak') {
-                                    Swal.fire('Error',
-                                        'Barang dengan kondisi Rusak tidak dapat ditambahkan ke keranjang.', 'error'
-                                        );
-                                } else {
-                                    cartData.push({
-                                        barcode: data.barcode,
-                                        name: data.name,
-                                        image: data.image,
-                                        condition: data.condition
-                                    });
-                                    updateCartTable();
-                                    document.getElementById('barcode').value = '';
-                                    Swal.fire('Success', 'Barang ditambahkan ke keranjang!', 'success');
-                                }
+                                // Tambahkan barang ke keranjang
+                                cartData.push({
+                                    barcode: data.barcode,
+                                    name: data.name,
+                                    image: data.image,
+                                    condition: data.condition
+                                });
+                                updateCartTable();
+                                barcodeInput.value = ''; // Bersihkan input barcode setelah ditambahkan
+                                Swal.fire('Success', 'Barang ditambahkan ke keranjang!', 'success');
                             }
-                        })
-                        .catch(error => Swal.fire('Error', 'Terjadi kesalahan saat mencari barang.', 'error'));
-                } else {
-                    Swal.fire('Warning', 'Barang sudah ada di keranjang!', 'warning');
-                }
+                        }
+                    })
+                    .catch(error => Swal.fire('Error', 'Terjadi kesalahan saat mencari barang.', 'error'));
             } else {
-                Swal.fire('Perhatian', 'Masukkan barcode terlebih dahulu.', 'warning');
+                Swal.fire('Warning', 'Barang sudah ada di keranjang!', 'warning');
             }
         }
+    }, 500); // Delay 500ms sebelum memproses
+});
 
 
-
-        function updateCartTable() {
-            const cartTableBody = document.getElementById('cartTableBody');
-            cartTableBody.innerHTML = '';
-            cartData.forEach((item, index) => {
-                const row = `<tr>
+// Fungsi untuk memperbarui tabel keranjang
+function updateCartTable() {
+    const cartTableBody = document.getElementById('cartTableBody');
+    cartTableBody.innerHTML = '';
+    cartData.forEach((item, index) => {
+        const row = `<tr>
             <td>${index + 1}</td>
             <td>${item.name}</td>
             <td><img src="${item.image}" alt="Gambar Barang" style="width:50px;height:50px;"></td>
-            <td>${item.condition}</td> <!-- Condition column -->
+            <td>${item.condition}</td>
             <td>${item.barcode}</td>
             <td><button type="button" class="btn btn-danger btn-sm" onclick="removeFromCart('${item.barcode}')">Hapus</button></td>
-            </tr>`;
-                cartTableBody.insertAdjacentHTML('beforeend', row);
-            });
-            document.getElementById('cartData').value = JSON.stringify(cartData);
-        }
+        </tr>`;
+        cartTableBody.insertAdjacentHTML('beforeend', row);
+    });
+    document.getElementById('cartData').value = JSON.stringify(cartData); // Update cart data hidden input
+}
 
+// Fungsi untuk menghapus barang dari keranjang
+function removeFromCart(barcode) {
+    cartData = cartData.filter(item => item.barcode !== barcode);
+    updateCartTable();
+    Swal.fire('Success', 'Barang dihapus dari keranjang!', 'success');
+}
 
-        function removeFromCart(barcode) {
-            cartData = cartData.filter(item => item.barcode !== barcode);
-            updateCartTable();
-            Swal.fire('Success', 'Barang dihapus dari keranjang!', 'success');
-        }
+// Set default date to today
+document.addEventListener('DOMContentLoaded', function () {
+    const borrowDateInput = document.getElementById('borrow_date');
+    
+    // Mendapatkan tanggal hari ini dalam format yang sesuai untuk input datetime-local (yyyy-mm-ddThh:mm)
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const hours = String(today.getHours()).padStart(2, '0');
+    const minutes = String(today.getMinutes()).padStart(2, '0');
+    
+    const defaultDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+    
+    // Menetapkan nilai default pada input tanggal
+    borrowDateInput.value = defaultDate;
+});
 
-        function processBorrow(event) {
-            event.preventDefault();
-            const form = document.getElementById('borrowForm');
-            const formData = new FormData(form);
-            formData.append('cartData', JSON.stringify(cartData));
-
-            fetch(form.action, {
-                    method: 'POST',
-                    body: formData,
-                    headers: {
-                        'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
-                    }
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        Swal.fire('Success', data.message, 'success').then(() => window.location.reload());
-                    } else {
-                        Swal.fire('Error', data.message || 'Terjadi kesalahan saat memproses peminjaman.', 'error');
-                    }
-                })
-                .catch(error => Swal.fire('Error', 'Terjadi kesalahan saat menghubungi server.', 'error'));
-        }
     </script>
 
 </body>

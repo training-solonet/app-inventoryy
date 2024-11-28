@@ -33,7 +33,6 @@ class BorrowController extends Controller
 
         // Cek apakah ada barang yang masih dipinjam
         foreach ($cartData as $item) {
-            // Cek apakah barang dengan barcode yang dipilih masih dalam status "Sedang Dipinjam"
             $isBorrowed = BorrowItem::where('barcode', $item['barcode'])
                 ->where('status', 'Sedang Dipinjam')
                 ->exists();
@@ -54,29 +53,23 @@ class BorrowController extends Controller
             'status' => 'Sedang Dipinjam'
         ]);
 
-        // Simpan setiap item di keranjang ke tabel `borrow_item` melalui model `BorrowItem`
+        // Simpan setiap item di keranjang ke tabel `borrow_item`
         foreach ($cartData as $item) {
-            // Ambil data barang berdasarkan barcode
             $barang = Barang::where('kode_barcode', $item['barcode'])->first();
 
             if ($barang) {
-                // Simpan item yang dipinjam beserta kondisi dan gambar
                 BorrowItem::create([
                     'borrow_id' => $borrow->id,
                     'barcode' => $item['barcode'],
                     'status' => 'Sedang Dipinjam',
-                    'kondisi' => $barang->kondisi,  // Menyimpan kondisi barang
-                    'gambar' => $barang->gambar     // Menyimpan gambar barang
+                    'kondisi' => $barang->kondisi,
+                    'gambar' => $barang->gambar
                 ]);
             }
         }
 
         return response()->json(['success' => true, 'message' => 'Peminjaman berhasil diproses!']);
     }
-
-
-
-
 
     /**
      * Generate a unique borrow ID.
@@ -86,7 +79,6 @@ class BorrowController extends Controller
     private function generateBorrowId()
     {
         $latestBorrow = Borrow::latest('id')->first();
-
         $newIdNumber = $latestBorrow ? intval(substr($latestBorrow->borrow_id, -4)) + 1 : 1;
         return 'BORROW' . str_pad($newIdNumber, 4, '0', STR_PAD_LEFT);
     }
@@ -101,7 +93,6 @@ class BorrowController extends Controller
         $borrowId = $this->generateBorrowId();
         return view('operator.scan', compact('borrowId'));
     }
-
 
     /**
      * Get item details by barcode.
@@ -120,11 +111,10 @@ class BorrowController extends Controller
         return response()->json([
             'name' => $barang->nama_barang,
             'barcode' => $barang->kode_barcode,
-            'image' => asset('images/' . $barang->gambar),  // Return image path
-            'condition' => $barang->kondisi  // Return condition
+            'image' => asset('images/' . $barang->gambar),
+            'condition' => $barang->kondisi
         ]);
     }
-
 
     public function detail($borrow_id)
     {
@@ -134,7 +124,6 @@ class BorrowController extends Controller
             return redirect()->route('recap')->with('error', 'Data peminjaman tidak ditemukan.');
         }
 
-        // Format tanggal peminjaman dengan Carbon
         $borrow->borrow_date = Carbon::parse($borrow->borrow_date)->format('d-m-Y');
 
         return view('operator.detail', [
@@ -143,34 +132,40 @@ class BorrowController extends Controller
         ]);
     }
 
-
-    // In BorrowController.php
     public function returnItem(Request $request, $id)
     {
         $borrowItem = BorrowItem::findOrFail($id);
-
-        // Mendapatkan kondisi dari request
-        $condition = $request->input('condition', 'Baik'); // default 'Baik'
-
-        // Update kondisi barang pada borrow item
+    
+        // Ambil kondisi dari request, defaultnya 'Baik'
+        $condition = $request->input('condition', 'Baik');
+    
+        // Update kondisi dan status di BorrowItem
         $borrowItem->kondisi = $condition;
-        $borrowItem->status = 'Dikembalikan';  // Update status menjadi "Dikembalikan"
-        $borrowItem->return_date = now();  // Set tanggal kembali
+        $borrowItem->status = 'Dikembalikan';
+        $borrowItem->return_date = now();
         $borrowItem->save();
-
-        // Jika kondisi barang adalah "Rusak", update kondisi di tabel barangs juga
-        if ($condition === 'Rusak') {
-            $barang = Barang::where('kode_barcode', $borrowItem->barcode)->first();
-            if ($barang) {
-                $barang->kondisi = 'Rusak';
+    
+        // Cari barang berdasarkan kode barcode
+        $barang = Barang::where('kode_barcode', $borrowItem->barcode)->first();
+    
+        if ($barang) {
+            // Perbarui kondisi barang sesuai kondisi pengembalian
+            if (in_array($condition, ['Rusak', 'Service', 'Hilang'])) {
+                $barang->kondisi = $condition;
                 $barang->save();
             }
         }
-
-        // Tentukan pesan yang akan ditampilkan
-        $message = ($condition === 'Rusak') ? 'Barang Dikembalikan dengan kondisi Rusak' : 'Barang Dikembalikan dengan kondisi Baik';
-
-        // Kirimkan pesan sukses ke session
+    
+        // Tentukan pesan sukses berdasarkan kondisi
+        $message = match ($condition) {
+            'Rusak' => 'Barang Dikembalikan dengan kondisi Rusak',
+            'Service' => 'Barang Dikembalikan dengan kondisi Service',
+            'Hilang' => 'Barang Dikembalikan dengan kondisi Hilang',
+            default => 'Barang Dikembalikan dengan kondisi Baik',
+        };
+    
+        // Redirect kembali dengan pesan sukses
         return redirect()->back()->with('success', $message);
     }
+    
 }
