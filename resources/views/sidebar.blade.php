@@ -35,6 +35,12 @@
           <p>Data Peminjaman</p>
         </a>
       </li>
+      {{-- <li class="{{ request()->routeIs('barang-project.index') ? 'active' : '' }}">
+        <a href="{{ route('barang-project.index') }}">
+          <i class="nc-icon nc-app"></i>
+          <p>Barang Project</p>
+        </a>
+      </li> --}}
     </ul>
   </div>
 </div>

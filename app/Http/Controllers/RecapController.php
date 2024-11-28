@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Borrow;
+use App\Models\BorrowItem;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -23,11 +24,17 @@ class RecapController extends Controller
             $query->whereDate('borrow_date', '<=', Carbon::parse($request->end_date)->endOfDay());
         }
 
-        // Filter berdasarkan pencarian nama peminjam atau ID peminjaman
+        // Filter berdasarkan pencarian nama peminjam, ID peminjaman, nama barang, atau kode barcode
         if ($request->has('search') && $request->search) {
             $query->where(function ($query) use ($request) {
                 $query->where('borrower_name', 'like', '%' . $request->search . '%')
-                    ->orWhere('borrow_id', 'like', '%' . $request->search . '%');
+                    ->orWhere('borrow_id', 'like', '%' . $request->search . '%')
+                    ->orWhereHas('borrowItems', function ($q) use ($request) {
+                        $q->whereHas('barang', function ($q2) use ($request) {
+                            $q2->where('kode_barcode', 'like', '%' . $request->search . '%')
+                                ->orWhere('nama_barang', 'like', '%' . $request->search . '%');
+                        });
+                    });
             });
         }
 
@@ -48,13 +55,15 @@ class RecapController extends Controller
         // Urutkan data terbaru di paling atas
         $borrows = $query->orderBy('borrow_date', 'desc')->paginate(5);
 
-        // Menghitung jumlah barang yang belum dikembalikan
-        $unreturnedItemsCount = $query->whereHas('borrowItems', function ($q) {
-            $q->where('status', 'Sedang Dipinjam');
-        })->count();
+        // Menghitung jumlah barang yang belum dikembalikan berdasarkan barcode dan status 'Sedang Dipinjam'
+        $unreturnedItemsCount = BorrowItem::where('status', 'Sedang Dipinjam')
+            ->whereHas('barang', function ($q) {
+                $q->whereNotNull('kode_barcode');
+            })->count();
 
         return view('operator.recap', compact('borrows', 'unreturnedItemsCount'));
     }
+
 
 
 

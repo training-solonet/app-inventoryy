@@ -28,7 +28,7 @@
                     <div class="col-md-12">
                         @if ($unreturnedItemsCount > 0)
                             <div class="alert alert-warning alert-dismissible fade show" role="alert"
-                                style="background: linear-gradient(to right, #ffeb3b, #ff9800); color: #ffffff; border: none;">
+                                style="background: linear-gradient(to right, #2196F3, #000000); color: #ffffff; border: none;">
                                 <strong>Pengingat!</strong> Ada <strong>{{ $unreturnedItemsCount }}</strong> barang yang
                                 belum dikembalikan.
                                 Pastikan untuk segera mengembalikan barang tersebut.
@@ -37,6 +37,7 @@
                                 </button>
                             </div>
                         @endif
+
                         <div class="card">
                             <div class="card-header d-flex justify-content-between align-items-center">
                                 <h4 class="card-title">Rekap Peminjaman</h4>
@@ -62,8 +63,9 @@
                                         <div class="col-md-3 mt-3">
                                             <input type="text" name="search" class="form-control"
                                                 value="{{ request()->input('search') }}"
-                                                placeholder="Cari berdasarkan Nama Peminjam atau ID Peminjaman">
+                                                placeholder="Cari berdasarkan Nama Peminjam atau ID Peminjaman atau Nama Barang / Kode Barcode">
                                         </div>
+
 
                                         <!-- Filter Status -->
                                         <div class="col-md-3 mt-3">
@@ -124,13 +126,15 @@
                                                 @endforeach
                                             @else
                                                 <tr>
-                                                    <td colspan="6" class="text-center">Tidak ada data peminjaman.
+                                                    <td colspan="7" class="text-center">Tidak ada data peminjaman.
                                                     </td>
                                                 </tr>
                                             @endif
                                         </tbody>
                                     </table>
                                 </div>
+
+
 
                                 <!-- Pagination -->
                                 <div class="d-flex justify-content-center mt-3">
@@ -154,6 +158,8 @@
     <script src="{{ asset('assets/js/core/bootstrap.min.js') }}"></script>
     <script src="{{ asset('assets/js/plugins/perfect-scrollbar.jquery.min.js') }}"></script>
     <script src="{{ asset('assets/js/paper-dashboard.min.js?v=2.0.1') }}" type="text/javascript"></script>
+
+
 
 </body>
 
