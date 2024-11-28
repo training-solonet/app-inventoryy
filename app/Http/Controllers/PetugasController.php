@@ -4,69 +4,57 @@ namespace App\Http\Controllers;
 
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class PetugasController extends Controller
 {
-    // Menampilkan data petugas
     public function index()
-    {
-        $petugas = User::all();
-        return view('tb_petugas', compact('petugas'));
-    }
+{
+    $petugas = User::whereIn('role', ['operator', 'admin'])->get();
+    return view('tb_petugas', compact('petugas'));
+}
 
-    // Menyimpan data petugas baru
+
     public function store(Request $request)
     {
-        // Validasi input
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email',
-            'password' => 'required|string|min:8|confirmed',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|confirmed|min:8',
             'role' => 'required|in:operator,admin',
         ]);
 
-        // Simpan data petugas baru tanpa hashing password
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => $request->password, // Tidak aman, hanya untuk pengembangan
-            'role' => $request->role,
-        ]);
+        User::create($request->only(['name', 'email', 'role', 'password']));
 
-        return redirect()->route('petugas.index')->with('success', 'Petugas berhasil ditambahkan');
+        return redirect()->back()->with('success', 'Petugas berhasil ditambahkan.');
     }
 
-    // Mengupdate data petugas
-    public function update(Request $request, $id)
+    public function update(Request $request, $id): RedirectResponse
     {
-        // Validasi input
+        $user = User::findOrFail($id);
+
         $request->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|unique:users,email,' . $id,
+            'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
+            'password' => 'nullable|string|confirmed|min:8',
             'role' => 'required|in:operator,admin',
         ]);
 
-        $petugas = User::findOrFail($id);
-        $petugas->name = $request->name;
-        $petugas->email = $request->email;
-
-        // Update password jika ada, tanpa hashing
-        if ($request->password) {
-            $petugas->password = $request->password; 
+        $data = $request->only(['name', 'email', 'role']);
+        if ($request->filled('password')) {
+            $data['password'] = $request->password; // Akan otomatis di-hash melalui mutator
         }
 
-        $petugas->role = $request->role;
-        $petugas->save();
+        $user->update($data);
 
-        return redirect()->route('petugas.index')->with('success', 'Petugas berhasil diupdate');
+        return redirect()->back()->with('success', 'Petugas berhasil diperbarui.');
     }
 
-    // Menghapus data petugas
     public function destroy($id)
     {
-        $petugas = User::findOrFail($id);
-        $petugas->delete();
+        $user = User::findOrFail($id);
+        $user->delete();
 
-        return redirect()->route('petugas.index')->with('success', 'Petugas berhasil dihapus');
+        return redirect()->back()->with('success', 'Petugas berhasil dihapus.');
     }
 }
