@@ -4,12 +4,15 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <title>App Monitoring</title>
+    <title>App Inventory</title>
 
     <!-- Fonts and Icons -->
     <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700|Noto+Sans:300,400,500,600,700,800|PT+Mono:300,400,500,600,700" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://kit.fontawesome.com/349ee9c857.js" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
 
     <!-- CSS Files -->
     <link rel="stylesheet" href="../assets/css/corporate-ui-dashboard.css?v=1.0.0">
@@ -49,7 +52,9 @@
                                     <label for="password" class="form-label">Password</label>
                                     <div class="input-group">
                                         <input type="password" id="password" name="password" class="form-control" placeholder="Enter password" required>
-                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword"><i class="fa fa-eye"></i></button>
+                                        <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="text-center">
