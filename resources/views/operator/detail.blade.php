@@ -151,7 +151,9 @@
                 input: 'select',
                 inputOptions: {
                     'Baik': 'Baik',
-                    'Rusak': 'Rusak'
+                    'Rusak': 'Rusak',
+                    'Service': 'Service',
+                    'Hilang': 'Hilang',
                 },
                 inputPlaceholder: 'Pilih kondisi',
                 showCancelButton: true,

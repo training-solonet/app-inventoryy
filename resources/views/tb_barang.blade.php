@@ -93,9 +93,14 @@
                                                     @endif
                                                 </td>
                                                 <td class="text-center">
-                                                    <span class="badge {{ $barang->kondisi == 'Rusak' ? 'badge-danger' : 'badge-success' }} px-2 py-1 font-weight-semibold" style="font-size: 0.95em;">
-                                                        {{ $barang->kondisi }}
-                                                    </span>
+                                                    <span class="badge 
+                                                    {{ $barang->kondisi == 'Rusak' ? 'badge-danger' : 
+                                                       ($barang->kondisi == 'Baik' ? 'badge-success' : 
+                                                       ($barang->kondisi == 'Service' ? 'badge-warning' : 
+                                                       ($barang->kondisi == 'Hilang' ? 'badge-secondary' : ''))) }}
+                                                    px-2 py-1 font-weight-semibold" style="font-size: 0.95em;">
+                                                    {{ $barang->kondisi }}
+                                                </span>
                                                 </td>
                                                 <td class="text-center">{{ $barang->jenis }}</td>
                                                 <td class="text-center">
@@ -164,6 +169,8 @@
                                     <select class="form-control" id="kondisi" name="kondisi" required>
                                         <option value="Baik">Baik</option>
                                         <option value="Rusak">Rusak</option>
+                                        <option value="Rusak">Service</option>
+                                        <option value="Rusak">Hilang</option>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -216,8 +223,12 @@
                                 <div class="form-group">
                                     <label for="kondisi">Kondisi</label>
                                     <select class="form-control" id="kondisi" name="kondisi" required>
-                                        <option value="Baik" {{ $barang->kondisi == 'Baik' ? 'selected' : '' }}>Baik</option>
-                                        <option value="Rusak" {{ $barang->kondisi == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                                            <option value="Baik" {{ $barang->kondisi == 'Baik' ? 'selected' : '' }}>Baik</option>
+                                            <option value="Rusak" {{ $barang->kondisi == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                                            <option value="Service" {{ $barang->kondisi == 'Service' ? 'selected' : '' }}>Service</option>
+                                            <option value="Hilang" {{ $barang->kondisi == 'Hilang' ? 'selected' : '' }}>Hilang</option>
+                                        </select>
+                                        
                                     </select>
                                 </div>
                                 <div class="form-group">
